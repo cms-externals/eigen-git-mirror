@@ -37,6 +37,7 @@ struct scalar_sum_op : binary_op_base<LhsScalar,RhsScalar>
 #ifndef EIGEN_SCALAR_BINARY_OP_PLUGIN
   EIGEN_EMPTY_STRUCT_CTOR(scalar_sum_op)
 #else
+  EIGEN_DEVICE_FUNC
   scalar_sum_op() {
     EIGEN_SCALAR_BINARY_OP_PLUGIN
   }
@@ -75,6 +76,7 @@ struct scalar_product_op  : binary_op_base<LhsScalar,RhsScalar>
 #ifndef EIGEN_SCALAR_BINARY_OP_PLUGIN
   EIGEN_EMPTY_STRUCT_CTOR(scalar_product_op)
 #else
+  EIGEN_DEVICE_FUNC
   scalar_product_op() {
     EIGEN_SCALAR_BINARY_OP_PLUGIN
   }
