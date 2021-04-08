@@ -90,6 +90,7 @@
   #pragma diag_suppress 2735
   #pragma diag_suppress 2737
   #pragma diag_suppress 2739
+  #pragma diag_suppress 20014
 #endif
 
 #else
