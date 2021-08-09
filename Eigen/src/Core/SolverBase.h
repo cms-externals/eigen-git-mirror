@@ -19,6 +19,7 @@ namespace internal {
 template<typename Derived>
 struct solve_assertion {
     template<bool Transpose_, typename Rhs>
+    EIGEN_DEVICE_FUNC
     static void run(const Derived& solver, const Rhs& b) { solver.template _check_solve_assertion<Transpose_>(b); }
 };
 
@@ -28,6 +29,7 @@ struct solve_assertion<Transpose<Derived> >
     typedef Transpose<Derived> type;
 
     template<bool Transpose_, typename Rhs>
+    EIGEN_DEVICE_FUNC
     static void run(const type& transpose, const Rhs& b)
     {
         internal::solve_assertion<typename internal::remove_all<Derived>::type>::template run<true>(transpose.nestedExpression(), b);
@@ -40,6 +42,7 @@ struct solve_assertion<CwiseUnaryOp<Eigen::internal::scalar_conjugate_op<Scalar>
     typedef CwiseUnaryOp<Eigen::internal::scalar_conjugate_op<Scalar>, const Transpose<Derived> > type;
 
     template<bool Transpose_, typename Rhs>
+    EIGEN_DEVICE_FUNC
     static void run(const type& adjoint, const Rhs& b)
     {
         internal::solve_assertion<typename internal::remove_all<Transpose<Derived> >::type>::template run<true>(adjoint.nestedExpression(), b);
@@ -107,6 +110,7 @@ class SolverBase : public EigenBase<Derived>
       */
     template<typename Rhs>
     inline const Solve<Derived, Rhs>
+    EIGEN_DEVICE_FUNC
     solve(const MatrixBase<Rhs>& b) const
     {
       internal::solve_assertion<typename internal::remove_all<Derived>::type>::template run<false>(derived(), b);
@@ -149,6 +153,7 @@ class SolverBase : public EigenBase<Derived>
   protected:
 
     template<bool Transpose_, typename Rhs>
+    EIGEN_DEVICE_FUNC
     void _check_solve_assertion(const Rhs& b) const {
         EIGEN_ONLY_USED_FOR_DEBUG(b);
         eigen_assert(derived().m_isInitialized && "Solver is not initialized.");
