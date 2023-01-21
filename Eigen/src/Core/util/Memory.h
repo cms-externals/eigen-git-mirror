@@ -239,7 +239,11 @@ EIGEN_DEVICE_FUNC inline void* aligned_realloc(void *ptr, std::size_t new_size, 
 {
   if (ptr == 0) return aligned_malloc(new_size);
   void *result;
-#if (EIGEN_DEFAULT_ALIGN_BYTES==0) || EIGEN_MALLOC_ALREADY_ALIGNED
+#if defined(EIGEN_CUDA_ARCH)
+  result = malloc(new_size);
+  memcpy(result, ptr, new_size>old_size ? old_size : new_size);
+  free(ptr);
+#elif (EIGEN_DEFAULT_ALIGN_BYTES==0) || EIGEN_MALLOC_ALREADY_ALIGNED
   EIGEN_UNUSED_VARIABLE(old_size)
   result = std::realloc(ptr,new_size);
 #else
@@ -646,6 +650,12 @@ template<typename T> EIGEN_DEVICE_FUNC T* smart_move(T* start, T* end, T* target
   #elif EIGEN_COMP_MSVC
     #define EIGEN_ALLOCA _alloca
   #endif
+  #ifdef EIGEN_CUDA_ARCH
+    // CUDA supports alloca starting from version 11.3, but only on devices with compute capability 5.2 or higher
+    #if EIGEN_CUDA_ARCH < 520 || EIGEN_COMP_NVCC < 110300
+      #undef EIGEN_ALLOCA
+    #endif
+  #endif
 #endif
 
 // With clang -Oz -mthumb, alloca changes the stack pointer in a way that is
@@ -747,18 +757,25 @@ template<typename T> class scoped_array : noncopyable
 {
   T* m_ptr;
 public:
+  EIGEN_DEVICE_FUNC
   explicit scoped_array(std::ptrdiff_t size)
   {
     m_ptr = new T[size];
   }
+  EIGEN_DEVICE_FUNC
   ~scoped_array()
   {
     delete[] m_ptr;
   }
+  EIGEN_DEVICE_FUNC
   T& operator[](std::ptrdiff_t i) { return m_ptr[i]; }
+  EIGEN_DEVICE_FUNC
   const T& operator[](std::ptrdiff_t i) const { return m_ptr[i]; }
+  EIGEN_DEVICE_FUNC
   T* &ptr() { return m_ptr; }
+  EIGEN_DEVICE_FUNC
   const T* ptr() const { return m_ptr; }
+  EIGEN_DEVICE_FUNC
   operator const T*() const { return m_ptr; }
 };
 
