@@ -457,9 +457,9 @@ protected:
 template<typename Scalar, typename Index, int StorageOrder>
 class const_blas_data_mapper : public blas_data_mapper<const Scalar, Index, StorageOrder> {
   public:
-  EIGEN_ALWAYS_INLINE const_blas_data_mapper(const Scalar *data, Index stride) : blas_data_mapper<const Scalar, Index, StorageOrder>(data, stride) {}
+  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE const_blas_data_mapper(const Scalar *data, Index stride) : blas_data_mapper<const Scalar, Index, StorageOrder>(data, stride) {}
 
-  EIGEN_ALWAYS_INLINE const_blas_data_mapper<Scalar, Index, StorageOrder> getSubMapper(Index i, Index j) const {
+  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE const_blas_data_mapper<Scalar, Index, StorageOrder> getSubMapper(Index i, Index j) const {
     return const_blas_data_mapper<Scalar, Index, StorageOrder>(&(this->operator()(i, j)), this->m_stride);
   }
 };
@@ -504,8 +504,8 @@ struct blas_traits<CwiseUnaryOp<scalar_conjugate_op<Scalar>, NestedXpr> >
     IsComplex = NumTraits<Scalar>::IsComplex,
     NeedToConjugate = Base::NeedToConjugate ? 0 : IsComplex
   };
-  static inline ExtractType extract(const XprType& x) { return Base::extract(x.nestedExpression()); }
-  static inline Scalar extractScalarFactor(const XprType& x) { return conj(Base::extractScalarFactor(x.nestedExpression())); }
+  EIGEN_DEVICE_FUNC static inline ExtractType extract(const XprType& x) { return Base::extract(x.nestedExpression()); }
+  EIGEN_DEVICE_FUNC static inline Scalar extractScalarFactor(const XprType& x) { return conj(Base::extractScalarFactor(x.nestedExpression())); }
 };
 
 // pop scalar multiple
@@ -533,8 +533,8 @@ struct blas_traits<CwiseBinaryOp<scalar_product_op<Scalar>, NestedXpr, const Cwi
   typedef blas_traits<NestedXpr> Base;
   typedef CwiseBinaryOp<scalar_product_op<Scalar>, NestedXpr, const CwiseNullaryOp<scalar_constant_op<Scalar>,Plain> > XprType;
   typedef typename Base::ExtractType ExtractType;
-  static inline ExtractType extract(const XprType& x) { return Base::extract(x.lhs()); }
-  static inline Scalar extractScalarFactor(const XprType& x)
+  EIGEN_DEVICE_FUNC static inline ExtractType extract(const XprType& x) { return Base::extract(x.lhs()); }
+  EIGEN_DEVICE_FUNC static inline Scalar extractScalarFactor(const XprType& x)
   { return Base::extractScalarFactor(x.lhs()) * x.rhs().functor().m_other; }
 };
 template<typename Scalar, typename Plain1, typename Plain2>
@@ -554,8 +554,8 @@ struct blas_traits<CwiseUnaryOp<scalar_opposite_op<Scalar>, NestedXpr> >
   typedef blas_traits<NestedXpr> Base;
   typedef CwiseUnaryOp<scalar_opposite_op<Scalar>, NestedXpr> XprType;
   typedef typename Base::ExtractType ExtractType;
-  static inline ExtractType extract(const XprType& x) { return Base::extract(x.nestedExpression()); }
-  static inline Scalar extractScalarFactor(const XprType& x)
+  EIGEN_DEVICE_FUNC static inline ExtractType extract(const XprType& x) { return Base::extract(x.nestedExpression()); }
+  EIGEN_DEVICE_FUNC static inline Scalar extractScalarFactor(const XprType& x)
   { return - Base::extractScalarFactor(x.nestedExpression()); }
 };
 
@@ -576,8 +576,8 @@ struct blas_traits<Transpose<NestedXpr> >
   enum {
     IsTransposed = Base::IsTransposed ? 0 : 1
   };
-  static inline ExtractType extract(const XprType& x) { return ExtractType(Base::extract(x.nestedExpression())); }
-  static inline Scalar extractScalarFactor(const XprType& x) { return Base::extractScalarFactor(x.nestedExpression()); }
+  EIGEN_DEVICE_FUNC static inline ExtractType extract(const XprType& x) { return ExtractType(Base::extract(x.nestedExpression())); }
+  EIGEN_DEVICE_FUNC static inline Scalar extractScalarFactor(const XprType& x) { return Base::extractScalarFactor(x.nestedExpression()); }
 };
 
 template<typename T>
@@ -595,7 +595,7 @@ struct extract_data_selector {
 
 template<typename T>
 struct extract_data_selector<T,false> {
-  static typename T::Scalar* run(const T&) { return 0; }
+  EIGEN_DEVICE_FUNC static typename T::Scalar* run(const T&) { return 0; }
 };
 
 template<typename T>

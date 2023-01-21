@@ -388,6 +388,7 @@ MatrixBase<Derived>::asDiagonal() const
   * \sa asDiagonal()
   */
 template<typename Derived>
+EIGEN_DEVICE_FUNC
 bool MatrixBase<Derived>::isDiagonal(const RealScalar& prec) const
 {
   if(cols() != rows()) return false;
@@ -418,6 +419,7 @@ template<> struct AssignmentKind<DenseShape,DiagonalShape> { typedef Diagonal2De
 template< typename DstXprType, typename SrcXprType, typename Functor>
 struct Assignment<DstXprType, SrcXprType, Functor, Diagonal2Dense>
 {
+  EIGEN_DEVICE_FUNC
   static void run(DstXprType &dst, const SrcXprType &src, const internal::assign_op<typename DstXprType::Scalar,typename SrcXprType::Scalar> &/*func*/)
   {
     Index dstRows = src.rows();
@@ -429,9 +431,11 @@ struct Assignment<DstXprType, SrcXprType, Functor, Diagonal2Dense>
     dst.diagonal() = src.diagonal();
   }
   
+  EIGEN_DEVICE_FUNC
   static void run(DstXprType &dst, const SrcXprType &src, const internal::add_assign_op<typename DstXprType::Scalar,typename SrcXprType::Scalar> &/*func*/)
   { dst.diagonal() += src.diagonal(); }
   
+  EIGEN_DEVICE_FUNC
   static void run(DstXprType &dst, const SrcXprType &src, const internal::sub_assign_op<typename DstXprType::Scalar,typename SrcXprType::Scalar> &/*func*/)
   { dst.diagonal() -= src.diagonal(); }
 };

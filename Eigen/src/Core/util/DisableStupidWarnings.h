@@ -126,7 +126,6 @@
   #undef EIGEN_NV_DIAG_SUPPRESS
   #undef EIGEN_MAKE_PRAGMA
 #endif
-
 #else
 // warnings already disabled:
 # ifndef EIGEN_WARNINGS_DISABLED_2
