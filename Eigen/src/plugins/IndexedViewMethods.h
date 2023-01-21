@@ -25,18 +25,21 @@ using IvcType = typename internal::IndexedViewCompatibleType<Indices, SizeAtComp
 typedef typename internal::IndexedViewCompatibleType<Index, 1>::type IvcIndex;
 
 template <typename Indices>
+EIGEN_DEVICE_FUNC
 inline IvcRowType<Indices> ivcRow(const Indices& indices) const {
   return internal::makeIndexedViewCompatible(
       indices, internal::variable_if_dynamic<Index, RowsAtCompileTime>(derived().rows()), Specialized);
 }
 
 template <typename Indices>
+EIGEN_DEVICE_FUNC
 inline IvcColType<Indices> ivcCol(const Indices& indices) const {
   return internal::makeIndexedViewCompatible(
       indices, internal::variable_if_dynamic<Index, ColsAtCompileTime>(derived().cols()), Specialized);
 }
 
 template <typename Indices>
+EIGEN_DEVICE_FUNC
 inline IvcType<Indices> ivcSize(const Indices& indices) const {
   return internal::makeIndexedViewCompatible(
       indices, internal::variable_if_dynamic<Index, SizeAtCompileTime>(derived().size()), Specialized);
@@ -204,6 +207,7 @@ template <typename RowIndices, typename ColIndices>
 using IndexedViewType = typename IndexedViewSelector<RowIndices, ColIndices>::ReturnType;
 
 template <typename RowIndices, typename ColIndices, EnableOverload<RowIndices, ColIndices> = true>
+EIGEN_DEVICE_FUNC
 IndexedViewType<RowIndices, ColIndices> operator()(const RowIndices& rowIndices, const ColIndices& colIndices) {
   return IndexedViewSelector<RowIndices, ColIndices>::run(derived(), rowIndices, colIndices);
 }

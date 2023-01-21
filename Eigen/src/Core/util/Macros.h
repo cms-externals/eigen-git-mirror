@@ -883,6 +883,12 @@
   #define EIGEN_DEVICE_FUNC
 #endif
 
+// Define compile-time constants for use by both the host and device functions
+#if defined(EIGEN_CUDA_ARCH) || defined(EIGEN_HIP_DEVICE_COMPILE)
+  #define EIGEN_DEVICE_CONST __device__
+#else
+  #define EIGEN_DEVICE_CONST
+#endif
 
 // this macro allows to get rid of linking errors about multiply defined functions.
 //  - static is not very good because it prevents definitions from different object files to be merged.
@@ -957,7 +963,9 @@ namespace Eigen {
 #define EIGEN_UNUSED_VARIABLE(var) Eigen::internal::ignore_unused_variable(var);
 
 #if !defined(EIGEN_ASM_COMMENT)
-  #if EIGEN_COMP_GNUC && (EIGEN_ARCH_i386_OR_x86_64 || EIGEN_ARCH_ARM_OR_ARM64)
+  #if defined(EIGEN_CUDA_ARCH)
+    #define EIGEN_ASM_COMMENT(X)  __asm__("//" X)
+  #elif EIGEN_COMP_GNUC && (EIGEN_ARCH_i386_OR_x86_64 || EIGEN_ARCH_ARM_OR_ARM64)
     #define EIGEN_ASM_COMMENT(X)  __asm__("#" X)
   #else
     #define EIGEN_ASM_COMMENT(X)
