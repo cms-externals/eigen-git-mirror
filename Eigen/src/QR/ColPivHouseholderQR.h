@@ -226,6 +226,7 @@ private:
       *
       * \sa absDeterminant(), logAbsDeterminant(), MatrixBase::determinant()
       */
+    EIGEN_DEVICE_FUNC
     typename MatrixType::Scalar determinant() const;
 
     /** \returns the absolute value of the determinant of the matrix of which
