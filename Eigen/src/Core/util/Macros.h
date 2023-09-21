@@ -842,7 +842,7 @@
 
 // Define compile-time constants for use by both the host and device functions
 #if defined(EIGEN_CUDA_ARCH) || defined(EIGEN_HIP_DEVICE_COMPILE)
-  #define EIGEN_DEVICE_CONST __device__
+  #define EIGEN_DEVICE_CONST __constant__
 #else
   #define EIGEN_DEVICE_CONST
 #endif
