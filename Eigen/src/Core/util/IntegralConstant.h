@@ -184,8 +184,8 @@ template<int N, int DynamicKey> struct cleanup_index_type<std::integral_constant
 #ifndef EIGEN_PARSED_BY_DOXYGEN
 
 template<int N>
-EIGEN_DEVICE_FUNC
-constexpr internal::FixedInt<N> fix{};
+EIGEN_CONSTEXPR EIGEN_DEVICE_CONST
+internal::FixedInt<N> fix{};
 
 #else // EIGEN_PARSED_BY_DOXYGEN
 
