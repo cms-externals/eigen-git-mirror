@@ -513,7 +513,13 @@ typename MatrixType::RealScalar ColPivHouseholderQR<MatrixType, PermutationIndex
 template<typename MatrixType, typename PermutationIndex>
 template<typename InputType>
 EIGEN_DEVICE_FUNC
-ColPivHouseholderQR<MatrixType, PermutationIndex>& ColPivHouseholderQR<MatrixType, PermutationIndex>::compute(const EigenBase<InputType>& matrix);
+ColPivHouseholderQR<MatrixType, PermutationIndex>& ColPivHouseholderQR<MatrixType, PermutationIndex>::compute(const EigenBase<InputType>& matrix)
+{
+  m_qr = matrix.derived();
+  computeInPlace();
+  return *this;
+}
+
 template<typename MatrixType, typename PermutationIndex>
 EIGEN_DEVICE_FUNC
 void ColPivHouseholderQR<MatrixType, PermutationIndex>::computeInPlace()
