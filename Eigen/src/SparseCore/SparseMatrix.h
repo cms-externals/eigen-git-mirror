@@ -163,58 +163,73 @@ class SparseMatrix
   public:
     
     /** \returns the number of rows of the matrix */
+    EIGEN_DEVICE_FUNC
     inline Index rows() const { return IsRowMajor ? m_outerSize : m_innerSize; }
     /** \returns the number of columns of the matrix */
+    EIGEN_DEVICE_FUNC
     inline Index cols() const { return IsRowMajor ? m_innerSize : m_outerSize; }
 
     /** \returns the number of rows (resp. columns) of the matrix if the storage order column major (resp. row major) */
+    EIGEN_DEVICE_FUNC
     inline Index innerSize() const { return m_innerSize; }
     /** \returns the number of columns (resp. rows) of the matrix if the storage order column major (resp. row major) */
+    EIGEN_DEVICE_FUNC
     inline Index outerSize() const { return m_outerSize; }
     
     /** \returns a const pointer to the array of values.
       * This function is aimed at interoperability with other libraries.
       * \sa innerIndexPtr(), outerIndexPtr() */
+    EIGEN_DEVICE_FUNC
     inline const Scalar* valuePtr() const { return m_data.valuePtr(); }
     /** \returns a non-const pointer to the array of values.
       * This function is aimed at interoperability with other libraries.
       * \sa innerIndexPtr(), outerIndexPtr() */
+    EIGEN_DEVICE_FUNC
     inline Scalar* valuePtr() { return m_data.valuePtr(); }
 
     /** \returns a const pointer to the array of inner indices.
       * This function is aimed at interoperability with other libraries.
       * \sa valuePtr(), outerIndexPtr() */
+    EIGEN_DEVICE_FUNC
     inline const StorageIndex* innerIndexPtr() const { return m_data.indexPtr(); }
     /** \returns a non-const pointer to the array of inner indices.
       * This function is aimed at interoperability with other libraries.
       * \sa valuePtr(), outerIndexPtr() */
+    EIGEN_DEVICE_FUNC
     inline StorageIndex* innerIndexPtr() { return m_data.indexPtr(); }
 
     /** \returns a const pointer to the array of the starting positions of the inner vectors.
       * This function is aimed at interoperability with other libraries.
       * \sa valuePtr(), innerIndexPtr() */
+    EIGEN_DEVICE_FUNC
     inline const StorageIndex* outerIndexPtr() const { return m_outerIndex; }
     /** \returns a non-const pointer to the array of the starting positions of the inner vectors.
       * This function is aimed at interoperability with other libraries.
       * \sa valuePtr(), innerIndexPtr() */
+    EIGEN_DEVICE_FUNC
     inline StorageIndex* outerIndexPtr() { return m_outerIndex; }
 
     /** \returns a const pointer to the array of the number of non zeros of the inner vectors.
       * This function is aimed at interoperability with other libraries.
       * \warning it returns the null pointer 0 in compressed mode */
+    EIGEN_DEVICE_FUNC
     inline const StorageIndex* innerNonZeroPtr() const { return m_innerNonZeros; }
     /** \returns a non-const pointer to the array of the number of non zeros of the inner vectors.
       * This function is aimed at interoperability with other libraries.
       * \warning it returns the null pointer 0 in compressed mode */
+    EIGEN_DEVICE_FUNC
     inline StorageIndex* innerNonZeroPtr() { return m_innerNonZeros; }
 
     /** \internal */
+    EIGEN_DEVICE_FUNC
     inline Storage& data() { return m_data; }
     /** \internal */
+    EIGEN_DEVICE_FUNC
     inline const Storage& data() const { return m_data; }
 
     /** \returns the value of the matrix at position \a i, \a j
       * This function returns Scalar(0) if the element is an explicit \em zero */
+    EIGEN_DEVICE_FUNC
     inline Scalar coeff(Index row, Index col) const
     {
       eigen_assert(row>=0 && row<rows() && col>=0 && col<cols());
@@ -233,6 +248,7 @@ class SparseMatrix
       * This is a O(log(nnz_j)) operation (binary search) plus the cost of insert(Index,Index)
       * function if the element does not already exist.
       */
+    EIGEN_DEVICE_FUNC
     inline Scalar& coeffRef(Index row, Index col)
     {
       eigen_assert(row>=0 && row<rows() && col>=0 && col<cols());
@@ -275,6 +291,7 @@ class SparseMatrix
       * if the elements of each inner vector are inserted in increasing inner index order, and in O(nnz_j) for a random insertion.
       *
       */
+    EIGEN_DEVICE_FUNC
     inline Scalar& insert(Index row, Index col);
 
   public:
@@ -286,6 +303,7 @@ class SparseMatrix
       * 
       * \sa resize(Index,Index), data()
       */
+    EIGEN_DEVICE_FUNC
     inline void setZero()
     {
       m_data.clear();
@@ -298,6 +316,7 @@ class SparseMatrix
     /** Preallocates \a reserveSize non zeros.
       *
       * Precondition: the matrix must be in compressed mode. */
+    EIGEN_DEVICE_FUNC
     inline void reserve(Index reserveSize)
     {
       eigen_assert(isCompressed() && "This function does not make sense in non compressed mode.");
@@ -318,9 +337,11 @@ class SparseMatrix
       * Typical choices include std::vector<int>, Eigen::VectorXi, Eigen::VectorXi::Constant, etc.
       */
     template<class SizesType>
+    EIGEN_DEVICE_FUNC
     inline void reserve(const SizesType& reserveSizes);
     #else
     template<class SizesType>
+    EIGEN_DEVICE_FUNC
     inline void reserve(const SizesType& reserveSizes, const typename SizesType::value_type& enableif =
         typename SizesType::value_type())
     {
@@ -330,6 +351,7 @@ class SparseMatrix
     #endif // EIGEN_PARSED_BY_DOXYGEN
   protected:
     template<class SizesType>
+    EIGEN_DEVICE_FUNC
     inline void reserveInnerVectors(const SizesType& reserveSizes)
     {
       if(isCompressed())
@@ -397,7 +419,7 @@ class SparseMatrix
           m_data.moveChunk(begin, target, innerNNZ);
         }
         
-        std::swap(m_outerIndex, newOuterIndex);
+        numext::swap(m_outerIndex, newOuterIndex);
         internal::conditional_aligned_delete_auto<StorageIndex, true>(newOuterIndex, m_outerSize + 1);
       }
       
@@ -416,6 +438,7 @@ class SparseMatrix
       * After an insertion session, you should call the finalize() function.
       *
       * \sa insert, insertBackByOuterInner, startVec */
+    EIGEN_DEVICE_FUNC
     inline Scalar& insertBack(Index row, Index col)
     {
       return insertBackByOuterInner(IsRowMajor?row:col, IsRowMajor?col:row);
@@ -423,6 +446,7 @@ class SparseMatrix
 
     /** \internal
       * \sa insertBack, startVec */
+    EIGEN_DEVICE_FUNC
     inline Scalar& insertBackByOuterInner(Index outer, Index inner)
     {
       eigen_assert(Index(m_outerIndex[outer+1]) == m_data.size() && "Invalid ordered insertion (invalid outer index)");
@@ -435,6 +459,7 @@ class SparseMatrix
 
     /** \internal
       * \warning use it only if you know what you are doing */
+    EIGEN_DEVICE_FUNC
     inline Scalar& insertBackByOuterInnerUnordered(Index outer, Index inner)
     {
       StorageIndex p = m_outerIndex[outer+1];
@@ -445,6 +470,7 @@ class SparseMatrix
 
     /** \internal
       * \sa insertBack, insertBackByOuterInner */
+    EIGEN_DEVICE_FUNC
     inline void startVec(Index outer)
     {
       eigen_assert(m_outerIndex[outer]==Index(m_data.size()) && "You must call startVec for each inner vector sequentially");
@@ -455,6 +481,7 @@ class SparseMatrix
     /** \internal
       * Must be called after inserting a set of non zero entries using the low level compressed API.
       */
+    EIGEN_DEVICE_FUNC
     inline void finalize()
     {
       if(isCompressed())
@@ -534,36 +561,46 @@ class SparseMatrix
     }
 
     template<typename InputIterators>
+    EIGEN_DEVICE_FUNC
     void setFromTriplets(const InputIterators& begin, const InputIterators& end);
 
     template<typename InputIterators,typename DupFunctor>
+    EIGEN_DEVICE_FUNC
     void setFromTriplets(const InputIterators& begin, const InputIterators& end, DupFunctor dup_func);
 
     template<typename Derived, typename DupFunctor>
+    EIGEN_DEVICE_FUNC
     void collapseDuplicates(DenseBase<Derived>& wi, DupFunctor dup_func = DupFunctor());
 
     template<typename InputIterators>
+    EIGEN_DEVICE_FUNC
     void setFromSortedTriplets(const InputIterators& begin, const InputIterators& end);
 
     template<typename InputIterators, typename DupFunctor>
+    EIGEN_DEVICE_FUNC
     void setFromSortedTriplets(const InputIterators& begin, const InputIterators& end, DupFunctor dup_func);
 
     template<typename InputIterators>
+    EIGEN_DEVICE_FUNC
     void insertFromTriplets(const InputIterators& begin, const InputIterators& end);
 
     template<typename InputIterators, typename DupFunctor>
+    EIGEN_DEVICE_FUNC
     void insertFromTriplets(const InputIterators& begin, const InputIterators& end, DupFunctor dup_func);
 
     template<typename InputIterators>
+    EIGEN_DEVICE_FUNC
     void insertFromSortedTriplets(const InputIterators& begin, const InputIterators& end);
 
     template<typename InputIterators, typename DupFunctor>
+    EIGEN_DEVICE_FUNC
     void insertFromSortedTriplets(const InputIterators& begin, const InputIterators& end, DupFunctor dup_func);
 
     //---
     
     /** \internal
       * same as insert(Index,Index) except that the indices are given relative to the storage order */
+    EIGEN_DEVICE_FUNC
     Scalar& insertByOuterInner(Index j, Index i)
     {
       Index start = m_outerIndex[j];
@@ -586,6 +623,7 @@ class SparseMatrix
 
     /** Turns the matrix into the \em compressed format.
       */
+    EIGEN_DEVICE_FUNC
     void makeCompressed()
     {
       if (isCompressed()) return;
@@ -622,6 +660,7 @@ class SparseMatrix
     }
 
     /** Turns the matrix into the uncompressed mode */
+    EIGEN_DEVICE_FUNC
     void uncompress()
     {
       if (!isCompressed()) return;
@@ -633,6 +672,7 @@ class SparseMatrix
     }
 
     /** Suppresses all nonzeros which are \b much \b smaller \b than \a reference under the tolerance \a epsilon */
+    EIGEN_DEVICE_FUNC
     void prune(const Scalar& reference, const RealScalar& epsilon = NumTraits<RealScalar>::dummy_precision())
     {
       prune(default_prunning_func(reference,epsilon));
@@ -646,6 +686,7 @@ class SparseMatrix
       * \sa prune(Scalar,RealScalar)
       */
     template<typename KeepFunc>
+    EIGEN_DEVICE_FUNC
     void prune(const KeepFunc& keep = KeepFunc())
     {
       StorageIndex k = 0;
@@ -684,6 +725,7 @@ class SparseMatrix
       *
       * \sa reserve(), setZero(), makeCompressed()
       */
+    EIGEN_DEVICE_FUNC
     void conservativeResize(Index rows, Index cols) {
 
       // If one dimension is null, then there is nothing to be preserved
@@ -737,6 +779,7 @@ class SparseMatrix
       * 
       * \sa reserve(), setZero()
       */
+    EIGEN_DEVICE_FUNC
     void resize(Index rows, Index cols)
     {
       const Index outerSize = IsRowMajor ? rows : cols;
@@ -756,21 +799,25 @@ class SparseMatrix
 
     /** \internal
       * Resize the nonzero vector to \a size */
+    EIGEN_DEVICE_FUNC
     void resizeNonZeros(Index size)
     {
       m_data.resize(size);
     }
 
     /** \returns a const expression of the diagonal coefficients. */
+    EIGEN_DEVICE_FUNC
     const ConstDiagonalReturnType diagonal() const { return ConstDiagonalReturnType(*this); }
     
     /** \returns a read-write expression of the diagonal coefficients.
       * \warning If the diagonal entries are written, then all diagonal
       * entries \b must already exist, otherwise an assertion will be raised.
       */
+    EIGEN_DEVICE_FUNC
     DiagonalReturnType diagonal() { return DiagonalReturnType(*this); }
 
     /** Default constructor yielding an empty \c 0 \c x \c 0 matrix */
+    EIGEN_DEVICE_FUNC
     inline SparseMatrix()
       : m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
@@ -778,6 +825,7 @@ class SparseMatrix
     }
 
     /** Constructs a \a rows \c x \a cols empty matrix */
+    EIGEN_DEVICE_FUNC
     inline SparseMatrix(Index rows, Index cols)
       : m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
@@ -786,6 +834,7 @@ class SparseMatrix
 
     /** Constructs a sparse matrix from the sparse expression \a other */
     template<typename OtherDerived>
+    EIGEN_DEVICE_FUNC
     inline SparseMatrix(const SparseMatrixBase<OtherDerived>& other)
       : m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
@@ -805,6 +854,7 @@ class SparseMatrix
 
     /** Constructs a sparse matrix from the sparse selfadjoint view \a other */
     template<typename OtherDerived, unsigned int UpLo>
+    EIGEN_DEVICE_FUNC
     inline SparseMatrix(const SparseSelfAdjointView<OtherDerived, UpLo>& other)
       : m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
@@ -817,6 +867,7 @@ class SparseMatrix
     }
 
     /** Copy constructor (it performs a deep copy) */
+    EIGEN_DEVICE_FUNC
     inline SparseMatrix(const SparseMatrix& other)
       : Base(), m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
@@ -825,6 +876,7 @@ class SparseMatrix
 
     /** \brief Copy constructor with in-place evaluation */
     template<typename OtherDerived>
+    EIGEN_DEVICE_FUNC
     SparseMatrix(const ReturnByValue<OtherDerived>& other)
       : Base(), m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
@@ -834,6 +886,7 @@ class SparseMatrix
 
     /** \brief Copy constructor with in-place evaluation */
     template<typename OtherDerived>
+    EIGEN_DEVICE_FUNC
     explicit SparseMatrix(const DiagonalBase<OtherDerived>& other)
       : Base(), m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
@@ -842,18 +895,20 @@ class SparseMatrix
 
     /** Swaps the content of two sparse matrices of the same type.
       * This is a fast operation that simply swaps the underlying pointers and parameters. */
+    EIGEN_DEVICE_FUNC
     inline void swap(SparseMatrix& other)
     {
       //EIGEN_DBG_SPARSE(std::cout << "SparseMatrix:: swap\n");
-      std::swap(m_outerIndex, other.m_outerIndex);
-      std::swap(m_innerSize, other.m_innerSize);
-      std::swap(m_outerSize, other.m_outerSize);
-      std::swap(m_innerNonZeros, other.m_innerNonZeros);
+      numext::swap(m_outerIndex, other.m_outerIndex);
+      numext::swap(m_innerSize, other.m_innerSize);
+      numext::swap(m_outerSize, other.m_outerSize);
+      numext::swap(m_innerNonZeros, other.m_innerNonZeros);
       m_data.swap(other.m_data);
     }
 
     /** Sets *this to the identity matrix.
       * This function also turns the matrix into compressed mode, and drop any reserved memory. */
+    EIGEN_DEVICE_FUNC
     inline void setIdentity()
     {
       eigen_assert(m_outerSize == m_innerSize && "ONLY FOR SQUARED MATRICES");
@@ -867,6 +922,7 @@ class SparseMatrix
       std::fill_n(valuePtr(), m_outerSize, Scalar(1));
     }
 
+    EIGEN_DEVICE_FUNC
     inline SparseMatrix& operator=(const SparseMatrix& other)
     {
       if (other.isRValue())
@@ -898,6 +954,7 @@ class SparseMatrix
 
 #ifndef EIGEN_PARSED_BY_DOXYGEN
     template<typename OtherDerived>
+    EIGEN_DEVICE_FUNC
     inline SparseMatrix& operator=(const EigenBase<OtherDerived>& other)
     { return Base::operator=(other.derived()); }
 
@@ -906,6 +963,7 @@ class SparseMatrix
 #endif // EIGEN_PARSED_BY_DOXYGEN
 
     template<typename OtherDerived>
+    EIGEN_DEVICE_FUNC
     EIGEN_DONT_INLINE SparseMatrix& operator=(const SparseMatrixBase<OtherDerived>& other);
 
 #ifndef EIGEN_NO_IO
@@ -956,6 +1014,7 @@ class SparseMatrix
 #endif
 
     /** Destructor */
+    EIGEN_DEVICE_FUNC
     inline ~SparseMatrix()
     {
       internal::conditional_aligned_delete_auto<StorageIndex, true>(m_outerIndex, m_outerSize + 1);
@@ -963,6 +1022,7 @@ class SparseMatrix
     }
 
     /** Overloaded for performance */
+    EIGEN_DEVICE_FUNC
     Scalar sum() const;
     
 #   ifdef EIGEN_SPARSEMATRIX_PLUGIN
@@ -972,6 +1032,7 @@ class SparseMatrix
 protected:
 
     template<typename Other>
+    EIGEN_DEVICE_FUNC
     void initAssignment(const Other& other)
     {
       resize(other.rows(), other.cols());
@@ -981,7 +1042,7 @@ protected:
 
     /** \internal
       * \sa insert(Index,Index) */
-    EIGEN_DEPRECATED EIGEN_DONT_INLINE Scalar& insertCompressed(Index row, Index col);
+    EIGEN_DEPRECATED EIGEN_DEVICE_FUNC EIGEN_DONT_INLINE Scalar& insertCompressed(Index row, Index col);
 
     /** \internal
       * A vector object that is equal to 0 everywhere but v at the position i */
@@ -991,20 +1052,23 @@ protected:
         StorageIndex m_value;
       public:
         typedef StorageIndex value_type;
+        EIGEN_DEVICE_FUNC
         SingletonVector(Index i, Index v)
           : m_index(convert_index(i)), m_value(convert_index(v))
         {}
 
+        EIGEN_DEVICE_FUNC
         StorageIndex operator[](Index i) const { return i==m_index ? m_value : 0; }
     };
 
     /** \internal
       * \sa insert(Index,Index) */
-    EIGEN_DEPRECATED EIGEN_DONT_INLINE Scalar& insertUncompressed(Index row, Index col);
+    EIGEN_DEPRECATED EIGEN_DEVICE_FUNC EIGEN_DONT_INLINE Scalar& insertUncompressed(Index row, Index col);
 
 public:
     /** \internal
       * \sa insert(Index,Index) */
+    EIGEN_DEVICE_FUNC
     EIGEN_STRONG_INLINE Scalar& insertBackUncompressed(Index row, Index col)
     {
       const Index outer = IsRowMajor ? row : col;
@@ -1149,7 +1213,9 @@ private:
   EIGEN_STATIC_ASSERT((Options&(ColMajor|RowMajor))==Options,INVALID_MATRIX_TEMPLATE_PARAMETERS)
 
   struct default_prunning_func {
+    EIGEN_DEVICE_FUNC
     default_prunning_func(const Scalar& ref, const RealScalar& eps) : reference(ref), epsilon(eps) {}
+    EIGEN_DEVICE_FUNC
     inline bool operator() (const Index&, const Index&, const Scalar& value) const
     {
       return !internal::isMuchSmallerThan(value, reference, epsilon);
@@ -1164,6 +1230,7 @@ namespace internal {
 // Creates a compressed sparse matrix from a range of unsorted triplets
 // Requires temporary storage to handle duplicate entries
 template <typename InputIterator, typename SparseMatrixType, typename DupFunctor>
+EIGEN_DEVICE_FUNC
 void set_from_triplets(const InputIterator& begin, const InputIterator& end, SparseMatrixType& mat,
                        DupFunctor dup_func) {
   constexpr bool IsRowMajor = SparseMatrixType::IsRowMajor;
@@ -1360,6 +1427,7 @@ void insert_from_triplets_sorted(const InputIterator& begin, const InputIterator
   */
 template<typename Scalar, int Options_, typename StorageIndex_>
 template<typename InputIterators>
+EIGEN_DEVICE_FUNC
 void SparseMatrix<Scalar,Options_,StorageIndex_>::setFromTriplets(const InputIterators& begin, const InputIterators& end)
 {
   internal::set_from_triplets<InputIterators, SparseMatrix<Scalar,Options_,StorageIndex_> >(begin, end, *this, internal::scalar_sum_op<Scalar,Scalar>());
@@ -1376,6 +1444,7 @@ void SparseMatrix<Scalar,Options_,StorageIndex_>::setFromTriplets(const InputIte
   */
 template<typename Scalar, int Options_, typename StorageIndex_>
 template<typename InputIterators, typename DupFunctor>
+EIGEN_DEVICE_FUNC
 void SparseMatrix<Scalar, Options_, StorageIndex_>::setFromTriplets(const InputIterators& begin, const InputIterators& end, DupFunctor dup_func)
 {
   internal::set_from_triplets<InputIterators, SparseMatrix<Scalar, Options_, StorageIndex_>, DupFunctor>(begin, end, *this, dup_func);
@@ -1504,6 +1573,7 @@ void SparseMatrix<Scalar, Options_, StorageIndex_>::insertFromSortedTriplets(con
 /** \internal */
 template <typename Scalar_, int Options_, typename StorageIndex_>
 template <typename Derived, typename DupFunctor>
+EIGEN_DEVICE_FUNC
 void SparseMatrix<Scalar_, Options_, StorageIndex_>::collapseDuplicates(DenseBase<Derived>& wi, DupFunctor dup_func) {
   // removes duplicate entries and compresses the matrix
   // the excess allocated memory is not released
@@ -1545,6 +1615,7 @@ void SparseMatrix<Scalar_, Options_, StorageIndex_>::collapseDuplicates(DenseBas
 /** \internal */
 template<typename Scalar, int Options_, typename StorageIndex_>
 template<typename OtherDerived>
+EIGEN_DEVICE_FUNC
 EIGEN_DONT_INLINE SparseMatrix<Scalar,Options_,StorageIndex_>& SparseMatrix<Scalar,Options_,StorageIndex_>::operator=(const SparseMatrixBase<OtherDerived>& other)
 {
   EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
@@ -1617,12 +1688,14 @@ EIGEN_DONT_INLINE SparseMatrix<Scalar,Options_,StorageIndex_>& SparseMatrix<Scal
 }
 
 template <typename Scalar_, int Options_, typename StorageIndex_>
+EIGEN_DEVICE_FUNC
 inline typename SparseMatrix<Scalar_, Options_, StorageIndex_>::Scalar&
 SparseMatrix<Scalar_, Options_, StorageIndex_>::insert(Index row, Index col) {
   return insertByOuterInner(IsRowMajor ? row : col, IsRowMajor ? col : row);
 }
 
 template <typename Scalar_, int Options_, typename StorageIndex_>
+EIGEN_DEVICE_FUNC
 EIGEN_STRONG_INLINE typename SparseMatrix<Scalar_, Options_, StorageIndex_>::Scalar&
 SparseMatrix<Scalar_, Options_, StorageIndex_>::insertAtByOuterInner(Index outer, Index inner, Index dst) {
   // random insertion into compressed matrix is very slow
@@ -1631,6 +1704,7 @@ SparseMatrix<Scalar_, Options_, StorageIndex_>::insertAtByOuterInner(Index outer
 }
 
 template <typename Scalar_, int Options_, typename StorageIndex_>
+EIGEN_DEVICE_FUNC
 EIGEN_DEPRECATED EIGEN_DONT_INLINE typename SparseMatrix<Scalar_, Options_, StorageIndex_>::Scalar&
 SparseMatrix<Scalar_, Options_, StorageIndex_>::insertUncompressed(Index row, Index col) {
   eigen_assert(!isCompressed());
@@ -1655,6 +1729,7 @@ SparseMatrix<Scalar_, Options_, StorageIndex_>::insertUncompressed(Index row, In
 }
 
 template <typename Scalar_, int Options_, typename StorageIndex_>
+EIGEN_DEVICE_FUNC
 EIGEN_DEPRECATED EIGEN_DONT_INLINE typename SparseMatrix<Scalar_, Options_, StorageIndex_>::Scalar&
 SparseMatrix<Scalar_, Options_, StorageIndex_>::insertCompressed(Index row, Index col) {
   eigen_assert(isCompressed());
@@ -1782,8 +1857,8 @@ namespace internal {
         : evaluator<SparseCompressedBase<SparseMatrix<Scalar_, Options_, StorageIndex_>>> {
       typedef evaluator<SparseCompressedBase<SparseMatrix<Scalar_, Options_, StorageIndex_>>> Base;
       typedef SparseMatrix<Scalar_, Options_, StorageIndex_> SparseMatrixType;
-      evaluator() : Base() {}
-      explicit evaluator(const SparseMatrixType& mat) : Base(mat) {}
+      EIGEN_DEVICE_FUNC evaluator() : Base() {}
+      EIGEN_DEVICE_FUNC explicit evaluator(const SparseMatrixType& mat) : Base(mat) {}
     };
 
 }

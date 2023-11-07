@@ -174,12 +174,15 @@ template<typename Derived> class MatrixBase
     lazyProduct(const MatrixBase<OtherDerived> &other) const;
 
     template<typename OtherDerived>
+    EIGEN_DEVICE_FUNC
     Derived& operator*=(const EigenBase<OtherDerived>& other);
 
     template<typename OtherDerived>
+    EIGEN_DEVICE_FUNC
     void applyOnTheLeft(const EigenBase<OtherDerived>& other);
 
     template<typename OtherDerived>
+    EIGEN_DEVICE_FUNC
     void applyOnTheRight(const EigenBase<OtherDerived>& other);
 
     template<typename DiagonalDerived>
@@ -251,6 +254,7 @@ template<typename Derived> class MatrixBase
     EIGEN_DEVICE_FUNC
     typename ConstSelfAdjointViewReturnType<UpLo>::Type selfadjointView() const;
 
+    EIGEN_DEVICE_FUNC
     const SparseView<Derived> sparseView(const Scalar& m_reference = Scalar(0),
                                          const typename NumTraits<Scalar>::Real& m_epsilon = NumTraits<Scalar>::dummy_precision()) const;
     EIGEN_DEVICE_FUNC static const IdentityReturnType Identity();
@@ -264,6 +268,7 @@ template<typename Derived> class MatrixBase
 
     EIGEN_DEVICE_FUNC
     const DiagonalWrapper<const Derived> asDiagonal() const;
+    EIGEN_DEVICE_FUNC
     const PermutationWrapper<const Derived> asPermutation() const;
     EIGEN_DEVICE_FUNC
     const SkewSymmetricWrapper<const Derived> asSkewSymmetric() const;
@@ -276,6 +281,7 @@ template<typename Derived> class MatrixBase
     EIGEN_DEVICE_FUNC Derived& setUnit(Index newSize, Index i);
 
     bool isIdentity(const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
+    EIGEN_DEVICE_FUNC
     bool isDiagonal(const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
 
     bool isUpperTriangular(const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
@@ -329,15 +335,21 @@ template<typename Derived> class MatrixBase
 
 /////////// LU module ///////////
 
-    template<typename PermutationIndex = DefaultPermutationIndex> inline const FullPivLU<PlainObject, PermutationIndex> fullPivLu() const;
-    template<typename PermutationIndex = DefaultPermutationIndex> inline const PartialPivLU<PlainObject, PermutationIndex> partialPivLu() const;
-
-    template<typename PermutationIndex = DefaultPermutationIndex> inline const PartialPivLU<PlainObject, PermutationIndex> lu() const;
+    template<typename PermutationIndex = DefaultPermutationIndex>
+    EIGEN_DEVICE_FUNC
+    inline const FullPivLU<PlainObject, PermutationIndex> fullPivLu() const;
+    template<typename PermutationIndex = DefaultPermutationIndex>
+    EIGEN_DEVICE_FUNC
+    inline const PartialPivLU<PlainObject, PermutationIndex> partialPivLu() const;
+    template<typename PermutationIndex = DefaultPermutationIndex>
+    EIGEN_DEVICE_FUNC
+    inline const PartialPivLU<PlainObject, PermutationIndex> lu() const;
 
     EIGEN_DEVICE_FUNC
     inline const Inverse<Derived> inverse() const;
 
     template<typename ResultType>
+    EIGEN_DEVICE_FUNC
     inline void computeInverseAndDetWithCheck(
       ResultType& inverse,
       typename ResultType::Scalar& determinant,
@@ -346,6 +358,7 @@ template<typename Derived> class MatrixBase
     ) const;
 
     template<typename ResultType>
+    EIGEN_DEVICE_FUNC
     inline void computeInverseWithCheck(
       ResultType& inverse,
       bool& invertible,
@@ -357,15 +370,22 @@ template<typename Derived> class MatrixBase
 
 /////////// Cholesky module ///////////
 
-    inline const LLT<PlainObject>  llt() const;
-    inline const LDLT<PlainObject> ldlt() const;
+    EIGEN_DEVICE_FUNC inline const LLT<PlainObject>  llt() const;
+    EIGEN_DEVICE_FUNC inline const LDLT<PlainObject> ldlt() const;
 
 /////////// QR module ///////////
 
+    EIGEN_DEVICE_FUNC
     inline const HouseholderQR<PlainObject> householderQr() const;
-    template<typename PermutationIndex = DefaultPermutationIndex> inline const ColPivHouseholderQR<PlainObject, PermutationIndex> colPivHouseholderQr() const;
-    template<typename PermutationIndex = DefaultPermutationIndex> inline const FullPivHouseholderQR<PlainObject, PermutationIndex> fullPivHouseholderQr() const;
-    template<typename PermutationIndex = DefaultPermutationIndex> inline const CompleteOrthogonalDecomposition<PlainObject, PermutationIndex> completeOrthogonalDecomposition() const;
+    template<typename PermutationIndex = DefaultPermutationIndex>
+    EIGEN_DEVICE_FUNC
+    inline const ColPivHouseholderQR<PlainObject, PermutationIndex> colPivHouseholderQr() const;
+    template<typename PermutationIndex = DefaultPermutationIndex>
+    EIGEN_DEVICE_FUNC
+    inline const FullPivHouseholderQR<PlainObject, PermutationIndex> fullPivHouseholderQr() const;
+    template<typename PermutationIndex = DefaultPermutationIndex>
+    EIGEN_DEVICE_FUNC
+    inline const CompleteOrthogonalDecomposition<PlainObject, PermutationIndex> completeOrthogonalDecomposition() const;
 
 /////////// Eigenvalues module ///////////
 
@@ -516,6 +536,7 @@ template<typename Derived> class MatrixBase
   */
 template<typename Derived>
 template<typename OtherDerived>
+EIGEN_DEVICE_FUNC
 inline Derived&
 MatrixBase<Derived>::operator*=(const EigenBase<OtherDerived> &other)
 {
@@ -530,6 +551,7 @@ MatrixBase<Derived>::operator*=(const EigenBase<OtherDerived> &other)
   */
 template<typename Derived>
 template<typename OtherDerived>
+EIGEN_DEVICE_FUNC
 inline void MatrixBase<Derived>::applyOnTheRight(const EigenBase<OtherDerived> &other)
 {
   other.derived().applyThisOnTheRight(derived());
@@ -542,6 +564,7 @@ inline void MatrixBase<Derived>::applyOnTheRight(const EigenBase<OtherDerived> &
   */
 template<typename Derived>
 template<typename OtherDerived>
+EIGEN_DEVICE_FUNC
 inline void MatrixBase<Derived>::applyOnTheLeft(const EigenBase<OtherDerived> &other)
 {
   other.derived().applyThisOnTheLeft(derived());

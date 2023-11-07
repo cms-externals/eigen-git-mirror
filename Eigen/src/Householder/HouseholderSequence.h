@@ -102,6 +102,7 @@ struct hseq_side_dependent_impl<VectorsType, CoeffsType, OnTheRight>
 {
   typedef Transpose<Block<const VectorsType, 1, Dynamic> > EssentialVectorType;
   typedef HouseholderSequence<VectorsType, CoeffsType, OnTheRight> HouseholderSequenceType;
+  EIGEN_DEVICE_FUNC
   static inline const EssentialVectorType essentialVector(const HouseholderSequenceType& h, Index k)
   {
     Index start = k+1+h.m_shift;
@@ -236,6 +237,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
     }
 
     /** \brief %Transpose of the Householder sequence. */
+    EIGEN_DEVICE_FUNC
     TransposeReturnType transpose() const
     {
       return TransposeReturnType(m_vectors.conjugate(), m_coeffs)
@@ -245,6 +247,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
     }
 
     /** \brief Complex conjugate of the Householder sequence. */
+    EIGEN_DEVICE_FUNC
     ConjugateReturnType conjugate() const
     {
       return ConjugateReturnType(m_vectors.conjugate(), m_coeffs.conjugate())
@@ -266,6 +269,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
     }
 
     /** \brief Adjoint (conjugate transpose) of the Householder sequence. */
+    EIGEN_DEVICE_FUNC
     AdjointReturnType adjoint() const
     {
       return AdjointReturnType(m_vectors, m_coeffs.conjugate())
@@ -275,6 +279,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
     }
 
     /** \brief Inverse of the Householder sequence (equals the adjoint). */
+    EIGEN_DEVICE_FUNC
     AdjointReturnType inverse() const { return adjoint(); }
 
     /** \internal */
@@ -341,7 +346,9 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
     }
 
     /** \internal */
-    template<typename Dest> inline void applyThisOnTheRight(Dest& dst) const
+    template<typename Dest>
+    EIGEN_DEVICE_FUNC
+    inline void applyThisOnTheRight(Dest& dst) const
     {
       Matrix<Scalar,1,Dest::RowsAtCompileTime,RowMajor,1,Dest::MaxRowsAtCompileTime> workspace(dst.rows());
       applyThisOnTheRight(dst, workspace);
@@ -349,6 +356,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
 
     /** \internal */
     template<typename Dest, typename Workspace>
+    EIGEN_DEVICE_FUNC
     inline void applyThisOnTheRight(Dest& dst, Workspace& workspace) const
     {
       workspace.resize(dst.rows());
@@ -361,7 +369,9 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
     }
 
     /** \internal */
-    template<typename Dest> inline void applyThisOnTheLeft(Dest& dst, bool inputIsIdentity = false) const
+    template<typename Dest>
+    EIGEN_DEVICE_FUNC
+    inline void applyThisOnTheLeft(Dest& dst, bool inputIsIdentity = false) const
     {
       Matrix<Scalar,1,Dest::ColsAtCompileTime,RowMajor,1,Dest::MaxColsAtCompileTime> workspace;
       applyThisOnTheLeft(dst, workspace, inputIsIdentity);
@@ -369,6 +379,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
 
     /** \internal */
     template<typename Dest, typename Workspace>
+    EIGEN_DEVICE_FUNC
     inline void applyThisOnTheLeft(Dest& dst, Workspace& workspace, bool inputIsIdentity = false) const
     {
       if(inputIsIdentity && m_reverse)
@@ -436,6 +447,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
       * and \f$ M \f$ is the matrix \p other.
       */
     template<typename OtherDerived>
+    EIGEN_DEVICE_FUNC
     typename internal::matrix_type_times_scalar_type<Scalar, OtherDerived>::Type operator*(const MatrixBase<OtherDerived>& other) const
     {
       typename internal::matrix_type_times_scalar_type<Scalar, OtherDerived>::Type
@@ -501,12 +513,14 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
       *
       * \sa reverseFlag(), transpose(), adjoint()
       */
+    EIGEN_DEVICE_FUNC
     HouseholderSequence& setReverseFlag(bool reverse)
     {
       m_reverse = reverse;
       return *this;
     }
 
+    EIGEN_DEVICE_FUNC
     bool reverseFlag() const { return m_reverse; }     /**< \internal \brief Returns the reverse flag. */
 
     typename VectorsType::Nested m_vectors;
@@ -526,6 +540,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
   * Householder sequence represented by \p h.
   */
 template<typename OtherDerived, typename VectorsType, typename CoeffsType, int Side>
+EIGEN_DEVICE_FUNC
 typename internal::matrix_type_times_scalar_type<typename VectorsType::Scalar,OtherDerived>::Type operator*(const MatrixBase<OtherDerived>& other, const HouseholderSequence<VectorsType,CoeffsType,Side>& h)
 {
   typename internal::matrix_type_times_scalar_type<typename VectorsType::Scalar,OtherDerived>::Type
@@ -539,6 +554,7 @@ typename internal::matrix_type_times_scalar_type<typename VectorsType::Scalar,Ot
   * \returns A HouseholderSequence constructed from the specified arguments.
   */
 template<typename VectorsType, typename CoeffsType>
+EIGEN_DEVICE_FUNC
 HouseholderSequence<VectorsType,CoeffsType> householderSequence(const VectorsType& v, const CoeffsType& h)
 {
   return HouseholderSequence<VectorsType,CoeffsType,OnTheLeft>(v, h);
@@ -551,6 +567,7 @@ HouseholderSequence<VectorsType,CoeffsType> householderSequence(const VectorsTyp
   * the constructed HouseholderSequence is set to OnTheRight, instead of the default OnTheLeft.
   */
 template<typename VectorsType, typename CoeffsType>
+EIGEN_DEVICE_FUNC
 HouseholderSequence<VectorsType,CoeffsType,OnTheRight> rightHouseholderSequence(const VectorsType& v, const CoeffsType& h)
 {
   return HouseholderSequence<VectorsType,CoeffsType,OnTheRight>(v, h);

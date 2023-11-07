@@ -53,6 +53,7 @@ struct selfadjoint_product_selector;
 template<typename MatrixType, typename OtherType, int UpLo>
 struct selfadjoint_product_selector<MatrixType,OtherType,UpLo,true>
 {
+  EIGEN_DEVICE_FUNC
   static void run(MatrixType& mat, const OtherType& other, const typename MatrixType::Scalar& alpha)
   {
     typedef typename MatrixType::Scalar Scalar;
@@ -85,6 +86,7 @@ struct selfadjoint_product_selector<MatrixType,OtherType,UpLo,true>
 template<typename MatrixType, typename OtherType, int UpLo>
 struct selfadjoint_product_selector<MatrixType,OtherType,UpLo,false>
 {
+  EIGEN_DEVICE_FUNC
   static void run(MatrixType& mat, const OtherType& other, const typename MatrixType::Scalar& alpha)
   {
     typedef typename MatrixType::Scalar Scalar;

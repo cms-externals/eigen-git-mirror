@@ -728,6 +728,7 @@ inline typename FullPivHouseholderQR<MatrixType, PermutationIndex>::MatrixQRetur
   */
 template<typename Derived>
 template<typename PermutationIndex>
+EIGEN_DEVICE_FUNC
 const FullPivHouseholderQR<typename MatrixBase<Derived>::PlainObject, PermutationIndex>
 MatrixBase<Derived>::fullPivHouseholderQr() const
 {

@@ -28,6 +28,7 @@ namespace Eigen {
   * */
 template<typename Derived>
 template<typename OtherDerived>
+EIGEN_DEVICE_FUNC
 inline const Product<Derived,OtherDerived,AliasFreeProduct>
 SparseMatrixBase<Derived>::operator*(const SparseMatrixBase<OtherDerived> &other) const
 {
@@ -41,6 +42,7 @@ template<typename Lhs, typename Rhs, int ProductType>
 struct generic_product_impl<Lhs, Rhs, SparseShape, SparseShape, ProductType>
 {
   template<typename Dest>
+  EIGEN_DEVICE_FUNC
   static void evalTo(Dest& dst, const Lhs& lhs, const Rhs& rhs)
   {
     evalTo(dst, lhs, rhs, typename evaluator_traits<Dest>::Shape());
@@ -48,6 +50,7 @@ struct generic_product_impl<Lhs, Rhs, SparseShape, SparseShape, ProductType>
 
   // dense += sparse * sparse
   template<typename Dest,typename ActualLhs>
+  EIGEN_DEVICE_FUNC
   static void addTo(Dest& dst, const ActualLhs& lhs, const Rhs& rhs, std::enable_if_t<is_same<typename evaluator_traits<Dest>::Shape,DenseShape>::value,int*>* = 0)
   {
     typedef typename nested_eval<ActualLhs,Dynamic>::type LhsNested;
@@ -60,6 +63,7 @@ struct generic_product_impl<Lhs, Rhs, SparseShape, SparseShape, ProductType>
 
   // dense -= sparse * sparse
   template<typename Dest>
+  EIGEN_DEVICE_FUNC
   static void subTo(Dest& dst, const Lhs& lhs, const Rhs& rhs, std::enable_if_t<is_same<typename evaluator_traits<Dest>::Shape,DenseShape>::value,int*>* = 0)
   {
     addTo(dst, -lhs, rhs);
@@ -69,6 +73,7 @@ protected:
 
   // sparse = sparse * sparse
   template<typename Dest>
+  EIGEN_DEVICE_FUNC
   static void evalTo(Dest& dst, const Lhs& lhs, const Rhs& rhs, SparseShape)
   {
     typedef typename nested_eval<Lhs,Dynamic>::type LhsNested;
@@ -81,6 +86,7 @@ protected:
 
   // dense = sparse * sparse
   template<typename Dest>
+  EIGEN_DEVICE_FUNC
   static void evalTo(Dest& dst, const Lhs& lhs, const Rhs& rhs, DenseShape)
   {
     dst.setZero();
@@ -105,6 +111,7 @@ template< typename DstXprType, typename Lhs, typename Rhs>
 struct Assignment<DstXprType, Product<Lhs,Rhs,AliasFreeProduct>, internal::assign_op<typename DstXprType::Scalar,typename Product<Lhs,Rhs,AliasFreeProduct>::Scalar>, Sparse2Dense>
 {
   typedef Product<Lhs,Rhs,AliasFreeProduct> SrcXprType;
+  EIGEN_DEVICE_FUNC
   static void run(DstXprType &dst, const SrcXprType &src, const internal::assign_op<typename DstXprType::Scalar,typename SrcXprType::Scalar> &)
   {
     Index dstRows = src.rows();
@@ -121,6 +128,7 @@ template< typename DstXprType, typename Lhs, typename Rhs>
 struct Assignment<DstXprType, Product<Lhs,Rhs,AliasFreeProduct>, internal::add_assign_op<typename DstXprType::Scalar,typename Product<Lhs,Rhs,AliasFreeProduct>::Scalar>, Sparse2Dense>
 {
   typedef Product<Lhs,Rhs,AliasFreeProduct> SrcXprType;
+  EIGEN_DEVICE_FUNC
   static void run(DstXprType &dst, const SrcXprType &src, const internal::add_assign_op<typename DstXprType::Scalar,typename SrcXprType::Scalar> &)
   {
     generic_product_impl<Lhs, Rhs>::addTo(dst,src.lhs(),src.rhs());
@@ -132,6 +140,7 @@ template< typename DstXprType, typename Lhs, typename Rhs>
 struct Assignment<DstXprType, Product<Lhs,Rhs,AliasFreeProduct>, internal::sub_assign_op<typename DstXprType::Scalar,typename Product<Lhs,Rhs,AliasFreeProduct>::Scalar>, Sparse2Dense>
 {
   typedef Product<Lhs,Rhs,AliasFreeProduct> SrcXprType;
+  EIGEN_DEVICE_FUNC
   static void run(DstXprType &dst, const SrcXprType &src, const internal::sub_assign_op<typename DstXprType::Scalar,typename SrcXprType::Scalar> &)
   {
     generic_product_impl<Lhs, Rhs>::subTo(dst,src.lhs(),src.rhs());
@@ -146,6 +155,7 @@ struct unary_evaluator<SparseView<Product<Lhs, Rhs, Options> >, IteratorBased>
   typedef typename XprType::PlainObject PlainObject;
   typedef evaluator<PlainObject> Base;
 
+  EIGEN_DEVICE_FUNC
   explicit unary_evaluator(const XprType& xpr)
     : m_result(xpr.rows(), xpr.cols())
   {

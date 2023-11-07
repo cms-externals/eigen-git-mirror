@@ -642,6 +642,7 @@ CompleteOrthogonalDecomposition<MatrixType, PermutationIndex>::householderQ() co
   */
 template <typename Derived>
 template <typename PermutationIndex>
+EIGEN_DEVICE_FUNC
 const CompleteOrthogonalDecomposition<typename MatrixBase<Derived>::PlainObject, PermutationIndex>
 MatrixBase<Derived>::completeOrthogonalDecomposition() const {
   return CompleteOrthogonalDecomposition<PlainObject>(eval());

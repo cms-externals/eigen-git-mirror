@@ -867,6 +867,7 @@ struct Assignment<DstXprType, Inverse<FullPivLU<MatrixType, PermutationIndex> >,
   */
 template<typename Derived>
 template<typename PermutationIndex>
+EIGEN_DEVICE_FUNC
 inline const FullPivLU<typename MatrixBase<Derived>::PlainObject, PermutationIndex>
 MatrixBase<Derived>::fullPivLu() const
 {
