@@ -36,12 +36,14 @@ public:
  using IndexedViewType = typename internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::ReturnType;
 
  template <typename RowIndices, typename ColIndices, EnableOverload<RowIndices, ColIndices> = true>
+ EIGEN_DEVICE_FUNC
  IndexedViewType<RowIndices, ColIndices> operator()(const RowIndices& rowIndices, const ColIndices& colIndices) {
    return internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::run(derived(), rowIndices, colIndices);
  }
 
 template <typename RowType, size_t RowSize, typename ColIndices, typename RowIndices = Array<RowType, RowSize, 1>,
           EnableOverload<RowIndices, ColIndices> = true>
+EIGEN_DEVICE_FUNC
 IndexedViewType<RowIndices, ColIndices> operator()(const RowType (&rowIndices)[RowSize], const ColIndices& colIndices) {
   return internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::run(derived(), RowIndices{rowIndices},
                                                                              colIndices);
@@ -49,6 +51,7 @@ IndexedViewType<RowIndices, ColIndices> operator()(const RowType (&rowIndices)[R
 
 template <typename RowIndices, typename ColType, size_t ColSize, typename ColIndices = Array<ColType, ColSize, 1>,
           EnableOverload<RowIndices, ColIndices> = true>
+EIGEN_DEVICE_FUNC
 IndexedViewType<RowIndices, ColIndices> operator()(const RowIndices& rowIndices, const ColType (&colIndices)[ColSize]) {
   return internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::run(derived(), rowIndices,
                                                                              ColIndices{colIndices});
@@ -57,6 +60,7 @@ IndexedViewType<RowIndices, ColIndices> operator()(const RowIndices& rowIndices,
 template <typename RowType, size_t RowSize, typename ColType, size_t ColSize,
           typename RowIndices = Array<RowType, RowSize, 1>, typename ColIndices = Array<ColType, ColSize, 1>,
           EnableOverload<RowIndices, ColIndices> = true>
+EIGEN_DEVICE_FUNC
 IndexedViewType<RowIndices, ColIndices> operator()(const RowType (&rowIndices)[RowSize],
                                                    const ColType (&colIndices)[ColSize]) {
   return internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::run(derived(), RowIndices{rowIndices},
@@ -69,6 +73,7 @@ template <typename RowIndices, typename ColIndices>
 using ConstIndexedViewType = typename internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::ConstReturnType;
 
 template <typename RowIndices, typename ColIndices, EnableConstOverload<RowIndices, ColIndices> = true>
+EIGEN_DEVICE_FUNC
 ConstIndexedViewType<RowIndices, ColIndices> operator()(const RowIndices& rowIndices,
                                                         const ColIndices& colIndices) const {
   return internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::run(derived(), rowIndices, colIndices);
@@ -76,6 +81,7 @@ ConstIndexedViewType<RowIndices, ColIndices> operator()(const RowIndices& rowInd
 
 template <typename RowType, size_t RowSize, typename ColIndices, typename RowIndices = Array<RowType, RowSize, 1>,
           EnableConstOverload<RowIndices, ColIndices> = true>
+EIGEN_DEVICE_FUNC
 ConstIndexedViewType<RowIndices, ColIndices> operator()(const RowType (&rowIndices)[RowSize],
                                                         const ColIndices& colIndices) const {
   return internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::run(derived(), RowIndices{rowIndices},
@@ -84,6 +90,7 @@ ConstIndexedViewType<RowIndices, ColIndices> operator()(const RowType (&rowIndic
 
 template <typename RowIndices, typename ColType, size_t ColSize, typename ColIndices = Array<ColType, ColSize, 1>,
           EnableConstOverload<RowIndices, ColIndices> = true>
+EIGEN_DEVICE_FUNC
 ConstIndexedViewType<RowIndices, ColIndices> operator()(const RowIndices& rowIndices,
                                                         const ColType (&colIndices)[ColSize]) const {
   return internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::run(derived(), rowIndices,
@@ -93,6 +100,7 @@ ConstIndexedViewType<RowIndices, ColIndices> operator()(const RowIndices& rowInd
 template <typename RowType, size_t RowSize, typename ColType, size_t ColSize,
           typename RowIndices = Array<RowType, RowSize, 1>, typename ColIndices = Array<ColType, ColSize, 1>,
           EnableConstOverload<RowIndices, ColIndices> = true>
+EIGEN_DEVICE_FUNC
 ConstIndexedViewType<RowIndices, ColIndices> operator()(const RowType (&rowIndices)[RowSize],
                                                         const ColType (&colIndices)[ColSize]) const {
   return internal::IndexedViewSelector<Derived, RowIndices, ColIndices>::run(derived(), RowIndices{rowIndices},
@@ -107,6 +115,7 @@ template <typename Indices>
 using VectorIndexedViewType = typename internal::VectorIndexedViewSelector<Derived, Indices>::ReturnType;
 
 template <typename Indices, EnableVectorOverload<Indices> = true>
+EIGEN_DEVICE_FUNC
 VectorIndexedViewType<Indices> operator()(const Indices& indices) {
   EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return internal::VectorIndexedViewSelector<Derived, Indices>::run(derived(), indices);
@@ -114,6 +123,7 @@ VectorIndexedViewType<Indices> operator()(const Indices& indices) {
 
 template <typename IndexType, size_t Size, typename Indices = Array<IndexType, Size, 1>,
           EnableVectorOverload<Indices> = true>
+EIGEN_DEVICE_FUNC
 VectorIndexedViewType<Indices> operator()(const IndexType (&indices)[Size]) {
   EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return internal::VectorIndexedViewSelector<Derived, Indices>::run(derived(), Indices{indices});
@@ -125,6 +135,7 @@ template <typename Indices>
 using ConstVectorIndexedViewType = typename internal::VectorIndexedViewSelector<Derived, Indices>::ConstReturnType;
 
 template <typename Indices, EnableConstVectorOverload<Indices> = true>
+EIGEN_DEVICE_FUNC
 ConstVectorIndexedViewType<Indices> operator()(const Indices& indices) const {
   EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return internal::VectorIndexedViewSelector<Derived, Indices>::run(derived(), indices);
@@ -132,6 +143,7 @@ ConstVectorIndexedViewType<Indices> operator()(const Indices& indices) const {
 
 template <typename IndexType, size_t Size, typename Indices = Array<IndexType, Size, 1>,
           EnableConstVectorOverload<Indices> = true>
+EIGEN_DEVICE_FUNC
 ConstVectorIndexedViewType<Indices> operator()(const IndexType (&indices)[Size]) const {
   EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
   return internal::VectorIndexedViewSelector<Derived, Indices>::run(derived(), Indices{indices});
@@ -180,6 +192,7 @@ ConstVectorIndexedViewType<Indices> operator()(const IndexType (&indices)[Size])
  * \sa operator()(const Indices&), class Block, class IndexedView, DenseBase::block(Index,Index,Index,Index)
  */
 template <typename RowIndices, typename ColIndices>
+EIGEN_DEVICE_FUNC
 IndexedView_or_Block operator()(const RowIndices& rowIndices, const ColIndices& colIndices);
 
 /** This is an overload of operator()(const RowIndices&, const ColIndices&) for 1D vectors or arrays
@@ -187,6 +200,7 @@ IndexedView_or_Block operator()(const RowIndices& rowIndices, const ColIndices& 
  * \only_for_vectors
  */
 template <typename Indices>
+EIGEN_DEVICE_FUNC
 IndexedView_or_VectorBlock operator()(const Indices& indices);
 
 #endif  // EIGEN_PARSED_BY_DOXYGEN

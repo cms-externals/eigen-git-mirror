@@ -40,6 +40,7 @@ class TriangularViewImpl<MatrixType, Mode, Sparse> : public SparseMatrixBase<Tri
 
  protected:
   // dummy solve function to make TriangularView happy.
+  EIGEN_DEVICE_FUNC
   void solve() const;
 
   typedef SparseMatrixBase<TriangularViewType> Base;
@@ -52,6 +53,7 @@ class TriangularViewImpl<MatrixType, Mode, Sparse> : public SparseMatrixBase<Tri
   typedef internal::remove_all_t<MatrixTypeNested> MatrixTypeNestedCleaned;
 
   template <typename RhsType, typename DstType>
+  EIGEN_DEVICE_FUNC
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void _solve_impl(const RhsType& rhs, DstType& dst) const {
     if (!(internal::is_same<RhsType, DstType>::value && internal::extract_data(dst) == internal::extract_data(rhs)))
       dst = rhs;
@@ -60,10 +62,12 @@ class TriangularViewImpl<MatrixType, Mode, Sparse> : public SparseMatrixBase<Tri
 
   /** Applies the inverse of \c *this to the dense vector or matrix \a other, "in-place" */
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   void solveInPlace(MatrixBase<OtherDerived>& other) const;
 
   /** Applies the inverse of \c *this to the sparse vector or matrix \a other, "in-place" */
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   void solveInPlace(SparseMatrixBase<OtherDerived>& other) const;
 };
 
@@ -89,14 +93,17 @@ struct unary_evaluator<TriangularView<ArgType, Mode>, IteratorBased> : evaluator
  public:
   enum { CoeffReadCost = evaluator<ArgType>::CoeffReadCost, Flags = XprType::Flags };
 
+  EIGEN_DEVICE_FUNC
   explicit unary_evaluator(const XprType& xpr) : m_argImpl(xpr.nestedExpression()), m_arg(xpr.nestedExpression()) {}
 
+  EIGEN_DEVICE_FUNC
   inline Index nonZerosEstimate() const { return m_argImpl.nonZerosEstimate(); }
 
   class InnerIterator : public EvalIterator {
     typedef EvalIterator Base;
 
    public:
+    EIGEN_DEVICE_FUNC
     EIGEN_STRONG_INLINE InnerIterator(const unary_evaluator& xprEval, Index outer)
         : Base(xprEval.m_argImpl, outer),
           m_returnOne(false),
@@ -111,6 +118,7 @@ struct unary_evaluator<TriangularView<ArgType, Mode>, IteratorBased> : evaluator
       }
     }
 
+    EIGEN_DEVICE_FUNC
     EIGEN_STRONG_INLINE InnerIterator& operator++() {
       if (HasUnitDiag && m_returnOne)
         m_returnOne = false;
@@ -124,6 +132,7 @@ struct unary_evaluator<TriangularView<ArgType, Mode>, IteratorBased> : evaluator
       return *this;
     }
 
+    EIGEN_DEVICE_FUNC
     EIGEN_STRONG_INLINE operator bool() const {
       if (HasUnitDiag && m_returnOne) return true;
       if (SkipFirst)
@@ -136,14 +145,18 @@ struct unary_evaluator<TriangularView<ArgType, Mode>, IteratorBased> : evaluator
       }
     }
 
+    EIGEN_DEVICE_FUNC
     inline Index row() const { return (ArgType::Flags & RowMajorBit ? Base::outer() : this->index()); }
+    EIGEN_DEVICE_FUNC
     inline Index col() const { return (ArgType::Flags & RowMajorBit ? this->index() : Base::outer()); }
+    EIGEN_DEVICE_FUNC
     inline StorageIndex index() const {
       if (HasUnitDiag && m_returnOne)
         return internal::convert_index<StorageIndex>(Base::outer());
       else
         return Base::index();
     }
+    EIGEN_DEVICE_FUNC
     inline Scalar value() const {
       if (HasUnitDiag && m_returnOne)
         return Scalar(1);
@@ -156,6 +169,7 @@ struct unary_evaluator<TriangularView<ArgType, Mode>, IteratorBased> : evaluator
     bool m_containsDiag;
 
    private:
+    EIGEN_DEVICE_FUNC
     Scalar& valueRef();
   };
 
@@ -168,6 +182,7 @@ struct unary_evaluator<TriangularView<ArgType, Mode>, IteratorBased> : evaluator
 
 template <typename Derived>
 template <int Mode>
+EIGEN_DEVICE_FUNC
 inline const TriangularView<const Derived, Mode> SparseMatrixBase<Derived>::triangularView() const {
   return TriangularView<const Derived, Mode>(derived());
 }

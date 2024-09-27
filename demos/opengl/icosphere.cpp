@@ -61,7 +61,7 @@ void IcoSphere::_subdivide(void) {
       int e0 = indices[i + k];
       int e1 = indices[i + k1];
       ids0[k] = e0;
-      if (e1 > e0) std::swap(e0, e1);
+      if (e1 > e0) numext::swap(e0, e1);
       Key edgeKey = Key(e0) | (Key(e1) << 32);
       std::map<Key, int>::iterator it = edgeMap.find(edgeKey);
       if (it == edgeMap.end()) {

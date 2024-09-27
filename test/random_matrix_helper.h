@@ -108,7 +108,7 @@ void randomPermutationVector(PermutationVectorType& v, Index size) {
     Index j;
     do j = internal::random<Index>(0, size - 1);
     while (j == i);
-    std::swap(v(i), v(j));
+    numext::swap(v(i), v(j));
   }
 }
 

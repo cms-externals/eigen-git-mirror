@@ -256,6 +256,7 @@ MatrixBase<Derived>::lpNorm() const {
  */
 template <typename Derived>
 template <typename OtherDerived>
+EIGEN_DEVICE_FUNC
 bool MatrixBase<Derived>::isOrthogonal(const MatrixBase<OtherDerived>& other, const RealScalar& prec) const {
   typename internal::nested_eval<Derived, 2>::type nested(derived());
   typename internal::nested_eval<OtherDerived, 2>::type otherNested(other.derived());
@@ -274,6 +275,7 @@ bool MatrixBase<Derived>::isOrthogonal(const MatrixBase<OtherDerived>& other, co
  * Output: \verbinclude MatrixBase_isUnitary.out
  */
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 bool MatrixBase<Derived>::isUnitary(const RealScalar& prec) const {
   typename internal::nested_eval<Derived, 1>::type self(derived());
   for (Index i = 0; i < cols(); ++i) {

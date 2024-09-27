@@ -55,11 +55,15 @@ template <int N>
 class FixedInt {
  public:
   static constexpr int value = N;
+  EIGEN_DEVICE_FUNC
   constexpr operator int() const { return N; }
 
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt() = default;
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt(std::integral_constant<int, N>) {}
 
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt(VariableAndFixedInt<N> other) {
 #ifndef EIGEN_INTERNAL_DEBUGGING
     EIGEN_UNUSED_VARIABLE(other);
@@ -67,46 +71,56 @@ class FixedInt {
     eigen_internal_assert(int(other) == N);
   }
 
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt<-N> operator-() const { return FixedInt<-N>(); }
 
   template <int M>
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt<N + M> operator+(FixedInt<M>) const {
     return FixedInt<N + M>();
   }
 
   template <int M>
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt<N - M> operator-(FixedInt<M>) const {
     return FixedInt<N - M>();
   }
 
   template <int M>
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt<N * M> operator*(FixedInt<M>) const {
     return FixedInt<N * M>();
   }
 
   template <int M>
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt<N / M> operator/(FixedInt<M>) const {
     return FixedInt<N / M>();
   }
 
   template <int M>
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt<N % M> operator%(FixedInt<M>) const {
     return FixedInt<N % M>();
   }
 
   template <int M>
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt<N | M> operator|(FixedInt<M>) const {
     return FixedInt<N | M>();
   }
 
   template <int M>
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt<N & M> operator&(FixedInt<M>) const {
     return FixedInt<N & M>();
   }
 
   // Needed in C++14 to allow fix<N>():
+  EIGEN_DEVICE_FUNC
   constexpr FixedInt operator()() const { return *this; }
 
+  EIGEN_DEVICE_FUNC
   constexpr VariableAndFixedInt<N> operator()(int val) const { return VariableAndFixedInt<N>(val); }
 };
 
@@ -144,7 +158,9 @@ template <int N>
 class VariableAndFixedInt {
  public:
   static const int value = N;
+  EIGEN_DEVICE_FUNC
   operator int() const { return m_value; }
+  EIGEN_DEVICE_FUNC
   VariableAndFixedInt(int val) { m_value = val; }
 
  protected:
@@ -211,6 +227,7 @@ struct cleanup_index_type<std::integral_constant<int, N>, DynamicKey> {
 #ifndef EIGEN_PARSED_BY_DOXYGEN
 
 template <int N>
+EIGEN_DEVICE_FUNC
 constexpr internal::FixedInt<N> fix{};
 
 #else  // EIGEN_PARSED_BY_DOXYGEN

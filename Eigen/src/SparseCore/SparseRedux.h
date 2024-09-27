@@ -16,6 +16,7 @@
 namespace Eigen {
 
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 typename internal::traits<Derived>::Scalar SparseMatrixBase<Derived>::sum() const {
   eigen_assert(rows() > 0 && cols() > 0 && "you are using a non initialized matrix");
   Scalar res(0);
@@ -27,6 +28,7 @@ typename internal::traits<Derived>::Scalar SparseMatrixBase<Derived>::sum() cons
 
 template <typename Scalar_, int Options_, typename Index_>
 typename internal::traits<SparseMatrix<Scalar_, Options_, Index_> >::Scalar
+EIGEN_DEVICE_FUNC
 SparseMatrix<Scalar_, Options_, Index_>::sum() const {
   eigen_assert(rows() > 0 && cols() > 0 && "you are using a non initialized matrix");
   if (this->isCompressed())
@@ -37,6 +39,7 @@ SparseMatrix<Scalar_, Options_, Index_>::sum() const {
 
 template <typename Scalar_, int Options_, typename Index_>
 typename internal::traits<SparseVector<Scalar_, Options_, Index_> >::Scalar
+EIGEN_DEVICE_FUNC
 SparseVector<Scalar_, Options_, Index_>::sum() const {
   eigen_assert(rows() > 0 && cols() > 0 && "you are using a non initialized matrix");
   return Matrix<Scalar, 1, Dynamic>::Map(m_data.valuePtr(), m_data.size()).sum();

@@ -338,7 +338,7 @@ const typename NNLS<MatrixType>::SolutionVectorType &NNLS<MatrixType>::solve(con
 template <typename MatrixType>
 void NNLS<MatrixType>::moveToInactiveSet_(Index idx) {
   // Update permutation matrix:
-  std::swap(index_sets_(idx), index_sets_(numInactive_));
+  numext::swap(index_sets_(idx), index_sets_(numInactive_));
   numInactive_++;
 
   // Perform rank-1 update of the QR decomposition stored in QR_ & qrCoeff_
@@ -349,7 +349,7 @@ void NNLS<MatrixType>::moveToInactiveSet_(Index idx) {
 template <typename MatrixType>
 void NNLS<MatrixType>::moveToActiveSet_(Index idx) {
   // swap index with last inactive one & reduce number of inactive columns
-  std::swap(index_sets_(idx), index_sets_(numInactive_ - 1));
+  numext::swap(index_sets_(idx), index_sets_(numInactive_ - 1));
   numInactive_--;
   // Update QR decomposition starting from the removed index up to the end [idx, ..., numInactive_]
   for (Index i = idx; i < numInactive_; i++) {

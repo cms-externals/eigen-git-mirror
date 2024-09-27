@@ -793,6 +793,7 @@ MatrixBase<Derived>::Identity() {
  * \sa class CwiseNullaryOp, Identity(), Identity(Index,Index), setIdentity()
  */
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 bool MatrixBase<Derived>::isIdentity(const RealScalar& prec) const {
   typename internal::nested_eval<Derived, 1>::type self(derived());
   for (Index j = 0; j < cols(); ++j) {

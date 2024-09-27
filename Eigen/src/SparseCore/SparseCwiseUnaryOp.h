@@ -30,11 +30,13 @@ struct unary_evaluator<CwiseUnaryOp<UnaryOp, ArgType>, IteratorBased>
     Flags = XprType::Flags
   };
 
+  EIGEN_DEVICE_FUNC
   explicit unary_evaluator(const XprType& op) : m_functor(op.functor()), m_argImpl(op.nestedExpression()) {
     EIGEN_INTERNAL_CHECK_COST_VALUE(functor_traits<UnaryOp>::Cost);
     EIGEN_INTERNAL_CHECK_COST_VALUE(CoeffReadCost);
   }
 
+  EIGEN_DEVICE_FUNC
   inline Index nonZerosEstimate() const { return m_argImpl.nonZerosEstimate(); }
 
  protected:
@@ -52,20 +54,24 @@ class unary_evaluator<CwiseUnaryOp<UnaryOp, ArgType>, IteratorBased>::InnerItera
   typedef typename unary_evaluator<CwiseUnaryOp<UnaryOp, ArgType>, IteratorBased>::EvalIterator Base;
 
  public:
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE InnerIterator(const unary_evaluator& unaryOp, Index outer)
       : Base(unaryOp.m_argImpl, outer), m_functor(unaryOp.m_functor) {}
 
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE InnerIterator& operator++() {
     Base::operator++();
     return *this;
   }
 
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Scalar value() const { return m_functor(Base::value()); }
 
  protected:
   const UnaryOp m_functor;
 
  private:
+  EIGEN_DEVICE_FUNC
   Scalar& valueRef();
 };
 
@@ -82,6 +88,7 @@ struct unary_evaluator<CwiseUnaryView<ViewOp, ArgType>, IteratorBased>
     Flags = XprType::Flags
   };
 
+  EIGEN_DEVICE_FUNC
   explicit unary_evaluator(const XprType& op) : m_functor(op.functor()), m_argImpl(op.nestedExpression()) {
     EIGEN_INTERNAL_CHECK_COST_VALUE(functor_traits<ViewOp>::Cost);
     EIGEN_INTERNAL_CHECK_COST_VALUE(CoeffReadCost);
@@ -102,15 +109,19 @@ class unary_evaluator<CwiseUnaryView<ViewOp, ArgType>, IteratorBased>::InnerIter
   typedef typename unary_evaluator<CwiseUnaryView<ViewOp, ArgType>, IteratorBased>::EvalIterator Base;
 
  public:
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE InnerIterator(const unary_evaluator& unaryOp, Index outer)
       : Base(unaryOp.m_argImpl, outer), m_functor(unaryOp.m_functor) {}
 
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE InnerIterator& operator++() {
     Base::operator++();
     return *this;
   }
 
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Scalar value() const { return m_functor(Base::value()); }
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Scalar& valueRef() { return m_functor(Base::valueRef()); }
 
  protected:
@@ -120,6 +131,7 @@ class unary_evaluator<CwiseUnaryView<ViewOp, ArgType>, IteratorBased>::InnerIter
 }  // end namespace internal
 
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 EIGEN_STRONG_INLINE Derived& SparseMatrixBase<Derived>::operator*=(const Scalar& other) {
   typedef typename internal::evaluator<Derived>::InnerIterator EvalIterator;
   internal::evaluator<Derived> thisEval(derived());
@@ -129,6 +141,7 @@ EIGEN_STRONG_INLINE Derived& SparseMatrixBase<Derived>::operator*=(const Scalar&
 }
 
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 EIGEN_STRONG_INLINE Derived& SparseMatrixBase<Derived>::operator/=(const Scalar& other) {
   typedef typename internal::evaluator<Derived>::InnerIterator EvalIterator;
   internal::evaluator<Derived> thisEval(derived());

@@ -767,8 +767,8 @@ static void test_tensor_randacc() {
     int k = rand() % 10;
     int l = rand() % 10;
     // only access those indices in a given order
-    if (i < j) std::swap(i, j);
-    if (k < l) std::swap(k, l);
+    if (i < j) numext::swap(i, j);
+    if (k < l) numext::swap(k, l);
     sym(t, i, j, k, l) = (i + j) * (k + l);
   }
 

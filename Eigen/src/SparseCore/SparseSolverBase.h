@@ -22,6 +22,7 @@ namespace internal {
  * The rhs is decomposed into small vertical panels which are solved through dense temporaries.
  */
 template <typename Decomposition, typename Rhs, typename Dest>
+EIGEN_DEVICE_FUNC
 std::enable_if_t<Rhs::ColsAtCompileTime != 1 && Dest::ColsAtCompileTime != 1> solve_sparse_through_dense_panels(
     const Decomposition& dec, const Rhs& rhs, Dest& dest) {
   EIGEN_STATIC_ASSERT((Dest::Flags & RowMajorBit) == 0, THIS_METHOD_IS_ONLY_FOR_COLUMN_MAJOR_MATRICES);
@@ -44,6 +45,7 @@ std::enable_if_t<Rhs::ColsAtCompileTime != 1 && Dest::ColsAtCompileTime != 1> so
 
 // Overload for vector as rhs
 template <typename Decomposition, typename Rhs, typename Dest>
+EIGEN_DEVICE_FUNC
 std::enable_if_t<Rhs::ColsAtCompileTime == 1 || Dest::ColsAtCompileTime == 1> solve_sparse_through_dense_panels(
     const Decomposition& dec, const Rhs& rhs, Dest& dest) {
   typedef typename Dest::Scalar DestScalar;
@@ -67,13 +69,18 @@ template <typename Derived>
 class SparseSolverBase : internal::noncopyable {
  public:
   /** Default constructor */
+  EIGEN_DEVICE_FUNC
   SparseSolverBase() : m_isInitialized(false) {}
 
+  EIGEN_DEVICE_FUNC
   SparseSolverBase(SparseSolverBase&& other) : internal::noncopyable{}, m_isInitialized{other.m_isInitialized} {}
 
+  EIGEN_DEVICE_FUNC
   ~SparseSolverBase() {}
 
+  EIGEN_DEVICE_FUNC
   Derived& derived() { return *static_cast<Derived*>(this); }
+  EIGEN_DEVICE_FUNC
   const Derived& derived() const { return *static_cast<const Derived*>(this); }
 
   /** \returns an expression of the solution x of \f$ A x = b \f$ using the current decomposition of A.
@@ -81,6 +88,7 @@ class SparseSolverBase : internal::noncopyable {
    * \sa compute()
    */
   template <typename Rhs>
+  EIGEN_DEVICE_FUNC
   inline const Solve<Derived, Rhs> solve(const MatrixBase<Rhs>& b) const {
     eigen_assert(m_isInitialized && "Solver is not initialized.");
     eigen_assert(derived().rows() == b.rows() && "solve(): invalid number of rows of the right hand side matrix b");
@@ -101,6 +109,7 @@ class SparseSolverBase : internal::noncopyable {
 #ifndef EIGEN_PARSED_BY_DOXYGEN
   /** \internal default implementation of solving with a sparse rhs */
   template <typename Rhs, typename Dest>
+  EIGEN_DEVICE_FUNC
   void _solve_impl(const SparseMatrixBase<Rhs>& b, SparseMatrixBase<Dest>& dest) const {
     internal::solve_sparse_through_dense_panels(derived(), b.derived(), dest.derived());
   }

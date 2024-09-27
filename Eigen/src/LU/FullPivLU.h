@@ -802,6 +802,7 @@ struct Assignment<
  */
 template <typename Derived>
 template <typename PermutationIndex>
+EIGEN_DEVICE_FUNC
 inline const FullPivLU<typename MatrixBase<Derived>::PlainObject, PermutationIndex> MatrixBase<Derived>::fullPivLu()
     const {
   return FullPivLU<PlainObject, PermutationIndex>(eval());

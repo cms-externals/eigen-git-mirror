@@ -163,12 +163,15 @@ class MatrixBase : public DenseBase<Derived> {
       const MatrixBase<OtherDerived>& other) const;
 
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   Derived& operator*=(const EigenBase<OtherDerived>& other);
 
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   void applyOnTheLeft(const EigenBase<OtherDerived>& other);
 
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   void applyOnTheRight(const EigenBase<OtherDerived>& other);
 
   template <typename DiagonalDerived>
@@ -182,12 +185,16 @@ class MatrixBase : public DenseBase<Derived> {
   template <typename OtherDerived>
   EIGEN_DEVICE_FUNC typename ScalarBinaryOpTraits<typename internal::traits<Derived>::Scalar,
                                                   typename internal::traits<OtherDerived>::Scalar>::ReturnType
+  EIGEN_DEVICE_FUNC
   dot(const MatrixBase<OtherDerived>& other) const;
 
   EIGEN_DEVICE_FUNC RealScalar squaredNorm() const;
   EIGEN_DEVICE_FUNC RealScalar norm() const;
+  EIGEN_DEVICE_FUNC
   RealScalar stableNorm() const;
+  EIGEN_DEVICE_FUNC
   RealScalar blueNorm() const;
+  EIGEN_DEVICE_FUNC
   RealScalar hypotNorm() const;
   EIGEN_DEVICE_FUNC const PlainObject normalized() const;
   EIGEN_DEVICE_FUNC const PlainObject stableNormalized() const;
@@ -240,6 +247,7 @@ class MatrixBase : public DenseBase<Derived> {
   template <unsigned int UpLo>
   EIGEN_DEVICE_FUNC typename ConstSelfAdjointViewReturnType<UpLo>::Type selfadjointView() const;
 
+  EIGEN_DEVICE_FUNC
   const SparseView<Derived> sparseView(
       const Scalar& m_reference = Scalar(0),
       const typename NumTraits<Scalar>::Real& m_epsilon = NumTraits<Scalar>::dummy_precision()) const;
@@ -253,6 +261,7 @@ class MatrixBase : public DenseBase<Derived> {
   EIGEN_DEVICE_FUNC static const BasisReturnType UnitW();
 
   EIGEN_DEVICE_FUNC const DiagonalWrapper<const Derived> asDiagonal() const;
+  EIGEN_DEVICE_FUNC
   const PermutationWrapper<const Derived> asPermutation() const;
   EIGEN_DEVICE_FUNC const SkewSymmetricWrapper<const Derived> asSkewSymmetric() const;
 
@@ -261,17 +270,24 @@ class MatrixBase : public DenseBase<Derived> {
   EIGEN_DEVICE_FUNC Derived& setUnit(Index i);
   EIGEN_DEVICE_FUNC Derived& setUnit(Index newSize, Index i);
 
+  EIGEN_DEVICE_FUNC
   bool isIdentity(const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
+  EIGEN_DEVICE_FUNC
   bool isDiagonal(const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
 
+  EIGEN_DEVICE_FUNC
   bool isUpperTriangular(const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
+  EIGEN_DEVICE_FUNC
   bool isLowerTriangular(const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
 
+  EIGEN_DEVICE_FUNC
   bool isSkewSymmetric(const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
 
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   bool isOrthogonal(const MatrixBase<OtherDerived>& other,
                     const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
+  EIGEN_DEVICE_FUNC
   bool isUnitary(const RealScalar& prec = NumTraits<Scalar>::dummy_precision()) const;
 
   /** \returns true if each coefficients of \c *this and \a other are all exactly equal.
@@ -296,13 +312,17 @@ class MatrixBase : public DenseBase<Derived> {
 
   // TODO forceAlignedAccess is temporarily disabled
   // Need to find a nicer workaround.
+  EIGEN_DEVICE_FUNC
   inline const Derived& forceAlignedAccess() const { return derived(); }
+  EIGEN_DEVICE_FUNC
   inline Derived& forceAlignedAccess() { return derived(); }
   template <bool Enable>
+  EIGEN_DEVICE_FUNC
   inline const Derived& forceAlignedAccessIf() const {
     return derived();
   }
   template <bool Enable>
+  EIGEN_DEVICE_FUNC
   inline Derived& forceAlignedAccessIf() {
     return derived();
   }
@@ -327,21 +347,26 @@ class MatrixBase : public DenseBase<Derived> {
   /////////// LU module ///////////
 
   template <typename PermutationIndex = DefaultPermutationIndex>
+  EIGEN_DEVICE_FUNC
   inline const FullPivLU<PlainObject, PermutationIndex> fullPivLu() const;
   template <typename PermutationIndex = DefaultPermutationIndex>
+  EIGEN_DEVICE_FUNC
   inline const PartialPivLU<PlainObject, PermutationIndex> partialPivLu() const;
 
   template <typename PermutationIndex = DefaultPermutationIndex>
+  EIGEN_DEVICE_FUNC
   inline const PartialPivLU<PlainObject, PermutationIndex> lu() const;
 
   EIGEN_DEVICE_FUNC inline const Inverse<Derived> inverse() const;
 
   template <typename ResultType>
+  EIGEN_DEVICE_FUNC
   inline void computeInverseAndDetWithCheck(
       ResultType& inverse, typename ResultType::Scalar& determinant, bool& invertible,
       const RealScalar& absDeterminantThreshold = NumTraits<Scalar>::dummy_precision()) const;
 
   template <typename ResultType>
+  EIGEN_DEVICE_FUNC
   inline void computeInverseWithCheck(
       ResultType& inverse, bool& invertible,
       const RealScalar& absDeterminantThreshold = NumTraits<Scalar>::dummy_precision()) const;
@@ -350,17 +375,23 @@ class MatrixBase : public DenseBase<Derived> {
 
   /////////// Cholesky module ///////////
 
+  EIGEN_DEVICE_FUNC
   inline const LLT<PlainObject> llt() const;
+  EIGEN_DEVICE_FUNC
   inline const LDLT<PlainObject> ldlt() const;
 
   /////////// QR module ///////////
 
+  EIGEN_DEVICE_FUNC
   inline const HouseholderQR<PlainObject> householderQr() const;
   template <typename PermutationIndex = DefaultPermutationIndex>
+  EIGEN_DEVICE_FUNC
   inline const ColPivHouseholderQR<PlainObject, PermutationIndex> colPivHouseholderQr() const;
   template <typename PermutationIndex = DefaultPermutationIndex>
+  EIGEN_DEVICE_FUNC
   inline const FullPivHouseholderQR<PlainObject, PermutationIndex> fullPivHouseholderQr() const;
   template <typename PermutationIndex = DefaultPermutationIndex>
+  EIGEN_DEVICE_FUNC
   inline const CompleteOrthogonalDecomposition<PlainObject, PermutationIndex> completeOrthogonalDecomposition() const;
 
   /////////// Eigenvalues module ///////////
@@ -510,6 +541,7 @@ class MatrixBase : public DenseBase<Derived> {
  */
 template <typename Derived>
 template <typename OtherDerived>
+EIGEN_DEVICE_FUNC
 inline Derived& MatrixBase<Derived>::operator*=(const EigenBase<OtherDerived>& other) {
   other.derived().applyThisOnTheRight(derived());
   return derived();
@@ -522,6 +554,7 @@ inline Derived& MatrixBase<Derived>::operator*=(const EigenBase<OtherDerived>& o
  */
 template <typename Derived>
 template <typename OtherDerived>
+EIGEN_DEVICE_FUNC
 inline void MatrixBase<Derived>::applyOnTheRight(const EigenBase<OtherDerived>& other) {
   other.derived().applyThisOnTheRight(derived());
 }
@@ -533,6 +566,7 @@ inline void MatrixBase<Derived>::applyOnTheRight(const EigenBase<OtherDerived>& 
  */
 template <typename Derived>
 template <typename OtherDerived>
+EIGEN_DEVICE_FUNC
 inline void MatrixBase<Derived>::applyOnTheLeft(const EigenBase<OtherDerived>& other) {
   other.derived().applyThisOnTheLeft(derived());
 }

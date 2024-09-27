@@ -111,6 +111,7 @@ struct SymbolicExpressionEvaluator<Expr, SizeAtCompileTime, std::enable_if_t<sym
 template <typename Expr>
 struct SymbolicExpressionEvaluator<Expr, Dynamic, std::enable_if_t<symbolic::is_symbolic<Expr>::value>> {
   static constexpr Index ValueAtCompileTime = Undefined;
+  EIGEN_DEVICE_FUNC
   static Index eval(const Expr& expr, Index size) { return expr.eval(Eigen::placeholders::last = size - 1); }
 };
 
@@ -118,6 +119,7 @@ struct SymbolicExpressionEvaluator<Expr, Dynamic, std::enable_if_t<symbolic::is_
 template <int N, int SizeAtCompileTime>
 struct SymbolicExpressionEvaluator<FixedInt<N>, SizeAtCompileTime, void> {
   static constexpr Index ValueAtCompileTime = static_cast<Index>(N);
+  EIGEN_DEVICE_FUNC
   static Index eval(const FixedInt<N>& /*expr*/, Index /*size*/) { return ValueAtCompileTime; }
 };
 

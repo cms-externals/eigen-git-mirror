@@ -70,6 +70,7 @@ struct permutation_matrix_product<ExpressionType, Side, Transposed, SparseShape>
   static constexpr bool NeedInversePermutation = Transposed ? Side == OnTheLeft : Side == OnTheRight;
 
   template <typename Dest, typename PermutationType>
+  EIGEN_DEVICE_FUNC
   static inline void permute_outer(Dest& dst, const PermutationType& perm, const ExpressionType& xpr) {
     // if ExpressionType is not ReturnType, evaluate `xpr` (allocation)
     // otherwise, just reference `xpr`
@@ -183,6 +184,7 @@ struct product_evaluator<Product<Lhs, Rhs, AliasFreeProduct>, ProductTag, Permut
 
   enum { Flags = Base::Flags | EvalBeforeNestingBit };
 
+  EIGEN_DEVICE_FUNC
   explicit product_evaluator(const XprType& xpr) : m_result(xpr.rows(), xpr.cols()) {
     internal::construct_at<Base>(this, m_result);
     generic_product_impl<Lhs, Rhs, PermutationShape, SparseShape, ProductTag>::evalTo(m_result, xpr.lhs(), xpr.rhs());
@@ -201,6 +203,7 @@ struct product_evaluator<Product<Lhs, Rhs, AliasFreeProduct>, ProductTag, Sparse
 
   enum { Flags = Base::Flags | EvalBeforeNestingBit };
 
+  EIGEN_DEVICE_FUNC
   explicit product_evaluator(const XprType& xpr) : m_result(xpr.rows(), xpr.cols()) {
     ::new (static_cast<Base*>(this)) Base(m_result);
     generic_product_impl<Lhs, Rhs, SparseShape, PermutationShape, ProductTag>::evalTo(m_result, xpr.lhs(), xpr.rhs());
@@ -215,6 +218,7 @@ struct product_evaluator<Product<Lhs, Rhs, AliasFreeProduct>, ProductTag, Sparse
 /** \returns the matrix with the permutation applied to the columns
  */
 template <typename SparseDerived, typename PermDerived>
+EIGEN_DEVICE_FUNC
 inline const Product<SparseDerived, PermDerived, AliasFreeProduct> operator*(
     const SparseMatrixBase<SparseDerived>& matrix, const PermutationBase<PermDerived>& perm) {
   return Product<SparseDerived, PermDerived, AliasFreeProduct>(matrix.derived(), perm.derived());
@@ -223,6 +227,7 @@ inline const Product<SparseDerived, PermDerived, AliasFreeProduct> operator*(
 /** \returns the matrix with the permutation applied to the rows
  */
 template <typename SparseDerived, typename PermDerived>
+EIGEN_DEVICE_FUNC
 inline const Product<PermDerived, SparseDerived, AliasFreeProduct> operator*(
     const PermutationBase<PermDerived>& perm, const SparseMatrixBase<SparseDerived>& matrix) {
   return Product<PermDerived, SparseDerived, AliasFreeProduct>(perm.derived(), matrix.derived());
@@ -231,6 +236,7 @@ inline const Product<PermDerived, SparseDerived, AliasFreeProduct> operator*(
 /** \returns the matrix with the inverse permutation applied to the columns.
  */
 template <typename SparseDerived, typename PermutationType>
+EIGEN_DEVICE_FUNC
 inline const Product<SparseDerived, Inverse<PermutationType>, AliasFreeProduct> operator*(
     const SparseMatrixBase<SparseDerived>& matrix, const InverseImpl<PermutationType, PermutationStorage>& tperm) {
   return Product<SparseDerived, Inverse<PermutationType>, AliasFreeProduct>(matrix.derived(), tperm.derived());
@@ -239,6 +245,7 @@ inline const Product<SparseDerived, Inverse<PermutationType>, AliasFreeProduct> 
 /** \returns the matrix with the inverse permutation applied to the rows.
  */
 template <typename SparseDerived, typename PermutationType>
+EIGEN_DEVICE_FUNC
 inline const Product<Inverse<PermutationType>, SparseDerived, AliasFreeProduct> operator*(
     const InverseImpl<PermutationType, PermutationStorage>& tperm, const SparseMatrixBase<SparseDerived>& matrix) {
   return Product<Inverse<PermutationType>, SparseDerived, AliasFreeProduct>(tperm.derived(), matrix.derived());

@@ -17,6 +17,7 @@ namespace Eigen {
 
 template <typename Derived>
 template <typename OtherDerived>
+EIGEN_DEVICE_FUNC
 inline typename internal::traits<Derived>::Scalar SparseMatrixBase<Derived>::dot(
     const MatrixBase<OtherDerived>& other) const {
   EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
@@ -47,6 +48,7 @@ inline typename internal::traits<Derived>::Scalar SparseMatrixBase<Derived>::dot
 
 template <typename Derived>
 template <typename OtherDerived>
+EIGEN_DEVICE_FUNC
 inline typename internal::traits<Derived>::Scalar SparseMatrixBase<Derived>::dot(
     const SparseMatrixBase<OtherDerived>& other) const {
   EIGEN_STATIC_ASSERT_VECTOR_ONLY(Derived)
@@ -79,18 +81,21 @@ inline typename internal::traits<Derived>::Scalar SparseMatrixBase<Derived>::dot
 }
 
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 inline typename NumTraits<typename internal::traits<Derived>::Scalar>::Real SparseMatrixBase<Derived>::squaredNorm()
     const {
   return numext::real((*this).cwiseAbs2().sum());
 }
 
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 inline typename NumTraits<typename internal::traits<Derived>::Scalar>::Real SparseMatrixBase<Derived>::norm() const {
   using std::sqrt;
   return sqrt(squaredNorm());
 }
 
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 inline typename NumTraits<typename internal::traits<Derived>::Scalar>::Real SparseMatrixBase<Derived>::blueNorm()
     const {
   return internal::blueNorm_impl(*this);

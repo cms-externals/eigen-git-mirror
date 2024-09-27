@@ -234,13 +234,19 @@ class level3_blocking {
   Index m_kc;
 
  public:
+  EIGEN_DEVICE_FUNC
   level3_blocking() : m_blockA(0), m_blockB(0), m_mc(0), m_nc(0), m_kc(0) {}
 
+  EIGEN_DEVICE_FUNC
   inline Index mc() const { return m_mc; }
+  EIGEN_DEVICE_FUNC
   inline Index nc() const { return m_nc; }
+  EIGEN_DEVICE_FUNC
   inline Index kc() const { return m_kc; }
 
+  EIGEN_DEVICE_FUNC
   inline LhsScalar* blockA() { return m_blockA; }
+  EIGEN_DEVICE_FUNC
   inline RhsScalar* blockB() { return m_blockB; }
 };
 
@@ -268,6 +274,7 @@ class gemm_blocking_space<StorageOrder, LhsScalar_, RhsScalar_, MaxRows, MaxCols
 #endif
 
  public:
+  EIGEN_DEVICE_FUNC
   gemm_blocking_space(Index /*rows*/, Index /*cols*/, Index /*depth*/, Index /*num_threads*/,
                       bool /*full_rows = false*/) {
     this->m_mc = ActualRows;
@@ -284,10 +291,14 @@ class gemm_blocking_space<StorageOrder, LhsScalar_, RhsScalar_, MaxRows, MaxCols
 #endif
   }
 
+  EIGEN_DEVICE_FUNC
   void initParallel(Index, Index, Index, Index) {}
 
+  EIGEN_DEVICE_FUNC
   inline void allocateA() {}
+  EIGEN_DEVICE_FUNC
   inline void allocateB() {}
+  EIGEN_DEVICE_FUNC
   inline void allocateAll() {}
 };
 
@@ -304,6 +315,7 @@ class gemm_blocking_space<StorageOrder, LhsScalar_, RhsScalar_, MaxRows, MaxCols
   Index m_sizeB;
 
  public:
+  EIGEN_DEVICE_FUNC
   gemm_blocking_space(Index rows, Index cols, Index depth, Index num_threads, bool l3_blocking) {
     this->m_mc = Transpose ? cols : rows;
     this->m_nc = Transpose ? rows : cols;
@@ -321,6 +333,7 @@ class gemm_blocking_space<StorageOrder, LhsScalar_, RhsScalar_, MaxRows, MaxCols
     m_sizeB = this->m_kc * this->m_nc;
   }
 
+  EIGEN_DEVICE_FUNC
   void initParallel(Index rows, Index cols, Index depth, Index num_threads) {
     this->m_mc = Transpose ? cols : rows;
     this->m_nc = Transpose ? rows : cols;
@@ -333,19 +346,23 @@ class gemm_blocking_space<StorageOrder, LhsScalar_, RhsScalar_, MaxRows, MaxCols
     m_sizeB = this->m_kc * this->m_nc;
   }
 
+  EIGEN_DEVICE_FUNC
   void allocateA() {
     if (this->m_blockA == 0) this->m_blockA = aligned_new<LhsScalar>(m_sizeA);
   }
 
+  EIGEN_DEVICE_FUNC
   void allocateB() {
     if (this->m_blockB == 0) this->m_blockB = aligned_new<RhsScalar>(m_sizeB);
   }
 
+  EIGEN_DEVICE_FUNC
   void allocateAll() {
     allocateA();
     allocateB();
   }
 
+  EIGEN_DEVICE_FUNC
   ~gemm_blocking_space() {
     aligned_delete(this->m_blockA, m_sizeA);
     aligned_delete(this->m_blockB, m_sizeB);

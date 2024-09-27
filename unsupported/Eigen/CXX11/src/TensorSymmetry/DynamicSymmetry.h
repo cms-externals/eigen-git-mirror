@@ -27,7 +27,7 @@ class DynamicSGroup {
         m_globalFlags(o.m_globalFlags) {}
   inline DynamicSGroup(DynamicSGroup&& o)
       : m_numIndices(o.m_numIndices), m_elements(), m_generators(o.m_generators), m_globalFlags(o.m_globalFlags) {
-    std::swap(m_elements, o.m_elements);
+    numext::swap(m_elements, o.m_elements);
   }
   inline DynamicSGroup& operator=(const DynamicSGroup& o) {
     m_numIndices = o.m_numIndices;
@@ -38,7 +38,7 @@ class DynamicSGroup {
   }
   inline DynamicSGroup& operator=(DynamicSGroup&& o) {
     m_numIndices = o.m_numIndices;
-    std::swap(m_elements, o.m_elements);
+    numext::swap(m_elements, o.m_elements);
     m_generators = o.m_generators;
     m_globalFlags = o.m_globalFlags;
     return *this;

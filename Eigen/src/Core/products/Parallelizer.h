@@ -199,7 +199,7 @@ EIGEN_STRONG_INLINE void parallelize_gemm(const Functor& func, Index rows, Index
 
   func.initParallelSession(threads);
 
-  if (transpose) std::swap(rows, cols);
+  if (transpose) numext::swap(rows, cols);
 
   ei_declare_aligned_stack_constructed_variable(GemmParallelTaskInfo<Index>, task_info, threads, 0);
 

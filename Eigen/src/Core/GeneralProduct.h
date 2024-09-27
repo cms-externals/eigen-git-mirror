@@ -245,6 +245,7 @@ struct gemv_static_vector_if<Scalar, Size, MaxSize, true> {
 #if EIGEN_MAX_STATIC_ALIGN_BYTES != 0
   internal::plain_array<Scalar, internal::min_size_prefer_fixed(Size, MaxSize), 0, AlignedMax>
       m_data;
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Scalar* data() { return m_data.array; }
 #else
   // Some architectures cannot align on the stack,
@@ -252,6 +253,7 @@ struct gemv_static_vector_if<Scalar, Size, MaxSize, true> {
   internal::plain_array<
       Scalar, internal::min_size_prefer_fixed(Size, MaxSize) + EIGEN_MAX_ALIGN_BYTES, 0>
       m_data;
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Scalar* data() {
     return reinterpret_cast<Scalar*>((std::uintptr_t(m_data.array) & ~(std::size_t(EIGEN_MAX_ALIGN_BYTES - 1))) + EIGEN_MAX_ALIGN_BYTES);
   }
@@ -262,6 +264,7 @@ struct gemv_static_vector_if<Scalar, Size, MaxSize, true> {
 template <int StorageOrder, bool BlasCompatible>
 struct gemv_dense_selector<OnTheLeft, StorageOrder, BlasCompatible> {
   template <typename Lhs, typename Rhs, typename Dest>
+  EIGEN_DEVICE_FUNC
   static void run(const Lhs& lhs, const Rhs& rhs, Dest& dest, const typename Dest::Scalar& alpha) {
     Transpose<Dest> destT(dest);
     enum { OtherStorageOrder = StorageOrder == RowMajor ? ColMajor : RowMajor };
@@ -273,6 +276,7 @@ struct gemv_dense_selector<OnTheLeft, StorageOrder, BlasCompatible> {
 template <>
 struct gemv_dense_selector<OnTheRight, ColMajor, true> {
   template <typename Lhs, typename Rhs, typename Dest>
+  EIGEN_DEVICE_FUNC
   static inline void run(const Lhs& lhs, const Rhs& rhs, Dest& dest, const typename Dest::Scalar& alpha) {
     typedef typename Lhs::Scalar LhsScalar;
     typedef typename Rhs::Scalar RhsScalar;
@@ -360,6 +364,7 @@ struct gemv_dense_selector<OnTheRight, ColMajor, true> {
 template <>
 struct gemv_dense_selector<OnTheRight, RowMajor, true> {
   template <typename Lhs, typename Rhs, typename Dest>
+  EIGEN_DEVICE_FUNC
   static void run(const Lhs& lhs, const Rhs& rhs, Dest& dest, const typename Dest::Scalar& alpha) {
     typedef typename Lhs::Scalar LhsScalar;
     typedef typename Rhs::Scalar RhsScalar;
@@ -414,6 +419,7 @@ struct gemv_dense_selector<OnTheRight, RowMajor, true> {
 template <>
 struct gemv_dense_selector<OnTheRight, ColMajor, false> {
   template <typename Lhs, typename Rhs, typename Dest>
+  EIGEN_DEVICE_FUNC
   static void run(const Lhs& lhs, const Rhs& rhs, Dest& dest, const typename Dest::Scalar& alpha) {
     EIGEN_STATIC_ASSERT((!nested_eval<Lhs, 1>::Evaluate),
                         EIGEN_INTERNAL_COMPILATION_ERROR_OR_YOU_MADE_A_PROGRAMMING_MISTAKE);
@@ -428,6 +434,7 @@ struct gemv_dense_selector<OnTheRight, ColMajor, false> {
 template <>
 struct gemv_dense_selector<OnTheRight, RowMajor, false> {
   template <typename Lhs, typename Rhs, typename Dest>
+  EIGEN_DEVICE_FUNC
   static void run(const Lhs& lhs, const Rhs& rhs, Dest& dest, const typename Dest::Scalar& alpha) {
     EIGEN_STATIC_ASSERT((!nested_eval<Lhs, 1>::Evaluate),
                         EIGEN_INTERNAL_COMPILATION_ERROR_OR_YOU_MADE_A_PROGRAMMING_MISTAKE);

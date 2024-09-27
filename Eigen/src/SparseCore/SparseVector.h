@@ -64,8 +64,11 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
   using Base::convert_index;
 
  public:
+  EIGEN_DEVICE_FUNC
   EIGEN_SPARSE_PUBLIC_INTERFACE(SparseVector)
+  EIGEN_DEVICE_FUNC
   EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(SparseVector, +=)
+  EIGEN_DEVICE_FUNC
   EIGEN_SPARSE_INHERIT_ASSIGNMENT_OPERATOR(SparseVector, -=)
 
   typedef internal::CompressedStorage<Scalar, StorageIndex> Storage;
@@ -73,36 +76,53 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
 
   enum { Options = Options_ };
 
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Index rows() const { return IsColVector ? m_size : 1; }
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Index cols() const { return IsColVector ? 1 : m_size; }
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Index innerSize() const { return m_size; }
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Index outerSize() const { return 1; }
 
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE const Scalar* valuePtr() const { return m_data.valuePtr(); }
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE Scalar* valuePtr() { return m_data.valuePtr(); }
 
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE const StorageIndex* innerIndexPtr() const { return m_data.indexPtr(); }
+  EIGEN_DEVICE_FUNC
   EIGEN_STRONG_INLINE StorageIndex* innerIndexPtr() { return m_data.indexPtr(); }
 
+  EIGEN_DEVICE_FUNC
   inline const StorageIndex* outerIndexPtr() const { return 0; }
+  EIGEN_DEVICE_FUNC
   inline StorageIndex* outerIndexPtr() { return 0; }
+  EIGEN_DEVICE_FUNC
   inline const StorageIndex* innerNonZeroPtr() const { return 0; }
+  EIGEN_DEVICE_FUNC
   inline StorageIndex* innerNonZeroPtr() { return 0; }
 
   /** \internal */
+  EIGEN_DEVICE_FUNC
   inline Storage& data() { return m_data; }
   /** \internal */
+  EIGEN_DEVICE_FUNC
   inline const Storage& data() const { return m_data; }
 
+  EIGEN_DEVICE_FUNC
   inline Scalar coeff(Index row, Index col) const {
     eigen_assert(IsColVector ? (col == 0 && row >= 0 && row < m_size) : (row == 0 && col >= 0 && col < m_size));
     return coeff(IsColVector ? row : col);
   }
+  EIGEN_DEVICE_FUNC
   inline Scalar coeff(Index i) const {
     eigen_assert(i >= 0 && i < m_size);
     return m_data.at(StorageIndex(i));
   }
 
+  EIGEN_DEVICE_FUNC
   inline Scalar& coeffRef(Index row, Index col) {
     eigen_assert(IsColVector ? (col == 0 && row >= 0 && row < m_size) : (row == 0 && col >= 0 && col < m_size));
     return coeffRef(IsColVector ? row : col);
@@ -114,6 +134,7 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
    *
    * This insertion might be very costly if the number of nonzeros above \a i is large.
    */
+  EIGEN_DEVICE_FUNC
   inline Scalar& coeffRef(Index i) {
     eigen_assert(i >= 0 && i < m_size);
 
@@ -124,36 +145,44 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
   typedef typename Base::InnerIterator InnerIterator;
   typedef typename Base::ReverseInnerIterator ReverseInnerIterator;
 
+  EIGEN_DEVICE_FUNC
   inline void setZero() { m_data.clear(); }
 
   /** \returns the number of non zero coefficients */
+  EIGEN_DEVICE_FUNC
   inline Index nonZeros() const { return m_data.size(); }
 
+  EIGEN_DEVICE_FUNC
   inline void startVec(Index outer) {
     EIGEN_UNUSED_VARIABLE(outer);
     eigen_assert(outer == 0);
   }
 
+  EIGEN_DEVICE_FUNC
   inline Scalar& insertBackByOuterInner(Index outer, Index inner) {
     EIGEN_UNUSED_VARIABLE(outer);
     eigen_assert(outer == 0);
     return insertBack(inner);
   }
+  EIGEN_DEVICE_FUNC
   inline Scalar& insertBack(Index i) {
     m_data.append(0, i);
     return m_data.value(m_data.size() - 1);
   }
 
+  EIGEN_DEVICE_FUNC
   Scalar& insertBackByOuterInnerUnordered(Index outer, Index inner) {
     EIGEN_UNUSED_VARIABLE(outer);
     eigen_assert(outer == 0);
     return insertBackUnordered(inner);
   }
+  EIGEN_DEVICE_FUNC
   inline Scalar& insertBackUnordered(Index i) {
     m_data.append(0, i);
     return m_data.value(m_data.size() - 1);
   }
 
+  EIGEN_DEVICE_FUNC
   inline Scalar& insert(Index row, Index col) {
     eigen_assert(IsColVector ? (col == 0 && row >= 0 && row < m_size) : (row == 0 && col >= 0 && col < m_size));
 
@@ -163,6 +192,7 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
     eigen_assert(outer == 0);
     return insert(inner);
   }
+  EIGEN_DEVICE_FUNC
   Scalar& insert(Index i) {
     eigen_assert(i >= 0 && i < m_size);
 
@@ -183,11 +213,14 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
 
   /**
    */
+  EIGEN_DEVICE_FUNC
   inline void reserve(Index reserveSize) { m_data.reserve(reserveSize); }
 
+  EIGEN_DEVICE_FUNC
   inline void finalize() {}
 
   /** \copydoc SparseMatrix::prune(const Scalar&,const RealScalar&) */
+  EIGEN_DEVICE_FUNC
   Index prune(const Scalar& reference, const RealScalar& epsilon = NumTraits<RealScalar>::dummy_precision()) {
     return prune([&](const Scalar& val) { return !internal::isMuchSmallerThan(val, reference, epsilon); });
   }
@@ -200,6 +233,7 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
    * \return The new number of structural non-zeros.
    */
   template <class F>
+  EIGEN_DEVICE_FUNC
   Index prune(F&& keep_predicate) {
     Index k = 0;
     Index n = m_data.size();
@@ -222,6 +256,7 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
    *
    * \sa resize(Index)
    */
+  EIGEN_DEVICE_FUNC
   void resize(Index rows, Index cols) {
     eigen_assert((IsColVector ? cols : rows) == 1 && "Outer dimension must equal 1");
     resize(IsColVector ? rows : cols);
@@ -231,6 +266,7 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
    * This method deletes all entries, thus leaving an empty sparse vector
    *
    * \sa  conservativeResize(), setZero() */
+  EIGEN_DEVICE_FUNC
   void resize(Index newSize) {
     m_size = newSize;
     m_data.clear();
@@ -243,6 +279,7 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
    *
    * \sa reserve(), setZero()
    */
+  EIGEN_DEVICE_FUNC
   void conservativeResize(Index newSize) {
     if (newSize < m_size) {
       Index i = 0;
@@ -252,15 +289,20 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
     m_size = newSize;
   }
 
+  EIGEN_DEVICE_FUNC
   void resizeNonZeros(Index size) { m_data.resize(size); }
 
+  EIGEN_DEVICE_FUNC
   inline SparseVector() : m_size(0) { resize(0); }
 
+  EIGEN_DEVICE_FUNC
   explicit inline SparseVector(Index size) : m_size(0) { resize(size); }
 
+  EIGEN_DEVICE_FUNC
   inline SparseVector(Index rows, Index cols) : m_size(0) { resize(rows, cols); }
 
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   inline SparseVector(const SparseMatrixBase<OtherDerived>& other) : m_size(0) {
 #ifdef EIGEN_SPARSE_CREATE_TEMPORARY_PLUGIN
     EIGEN_SPARSE_CREATE_TEMPORARY_PLUGIN
@@ -268,24 +310,28 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
     *this = other.derived();
   }
 
+  EIGEN_DEVICE_FUNC
   inline SparseVector(const SparseVector& other) : Base(other), m_size(0) { *this = other.derived(); }
 
   /** Swaps the values of \c *this and \a other.
    * Overloaded for performance: this version performs a \em shallow swap by swapping pointers and attributes only.
    * \sa SparseMatrixBase::swap()
    */
+  EIGEN_DEVICE_FUNC
   inline void swap(SparseVector& other) {
-    std::swap(m_size, other.m_size);
+    numext::swap(m_size, other.m_size);
     m_data.swap(other.m_data);
   }
 
   template <int OtherOptions>
+  EIGEN_DEVICE_FUNC
   inline void swap(SparseMatrix<Scalar, OtherOptions, StorageIndex>& other) {
     eigen_assert(other.outerSize() == 1);
-    std::swap(m_size, other.m_innerSize);
+    numext::swap(m_size, other.m_innerSize);
     m_data.swap(other.m_data);
   }
 
+  EIGEN_DEVICE_FUNC
   inline SparseVector& operator=(const SparseVector& other) {
     if (other.isRValue()) {
       swap(other.const_cast_derived());
@@ -297,6 +343,7 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
   }
 
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   inline SparseVector& operator=(const SparseMatrixBase<OtherDerived>& other) {
     SparseVector tmp(other.size());
     internal::sparse_vector_assign_selector<SparseVector, OtherDerived>::run(tmp, other.derived());
@@ -304,19 +351,23 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
     return *this;
   }
 
+  EIGEN_DEVICE_FUNC
   inline SparseVector(SparseVector&& other) : SparseVector() { this->swap(other); }
 
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   inline SparseVector(SparseCompressedBase<OtherDerived>&& other) : SparseVector() {
     *this = other.derived().markAsRValue();
   }
 
+  EIGEN_DEVICE_FUNC
   inline SparseVector& operator=(SparseVector&& other) {
     this->swap(other);
     return *this;
   }
 
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   inline SparseVector& operator=(SparseCompressedBase<OtherDerived>&& other) {
     *this = other.derived().markAsRValue();
     return *this;
@@ -324,6 +375,7 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
 
 #ifndef EIGEN_PARSED_BY_DOXYGEN
   template <typename Lhs, typename Rhs>
+  EIGEN_DEVICE_FUNC
   inline SparseVector& operator=(const SparseSparseProduct<Lhs, Rhs>& product) {
     return Base::operator=(product);
   }
@@ -338,9 +390,11 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
 #endif
 
   /** Destructor */
+  EIGEN_DEVICE_FUNC
   inline ~SparseVector() {}
 
   /** Overloaded for performance */
+  EIGEN_DEVICE_FUNC
   Scalar sum() const;
 
  public:
@@ -403,13 +457,18 @@ struct evaluator<SparseVector<Scalar_, Options_, Index_> > : evaluator_base<Spar
 
   enum { CoeffReadCost = NumTraits<Scalar_>::ReadCost, Flags = SparseVectorType::Flags };
 
+  EIGEN_DEVICE_FUNC
   evaluator() : Base() {}
 
+  EIGEN_DEVICE_FUNC
   explicit evaluator(const SparseVectorType& mat) : m_matrix(&mat) { EIGEN_INTERNAL_CHECK_COST_VALUE(CoeffReadCost); }
 
+  EIGEN_DEVICE_FUNC
   inline Index nonZerosEstimate() const { return m_matrix->nonZeros(); }
 
+  EIGEN_DEVICE_FUNC
   operator SparseVectorType&() { return m_matrix->const_cast_derived(); }
+  EIGEN_DEVICE_FUNC
   operator const SparseVectorType&() const { return *m_matrix; }
 
   const SparseVectorType* m_matrix;
@@ -417,6 +476,7 @@ struct evaluator<SparseVector<Scalar_, Options_, Index_> > : evaluator_base<Spar
 
 template <typename Dest, typename Src>
 struct sparse_vector_assign_selector<Dest, Src, SVA_Inner> {
+  EIGEN_DEVICE_FUNC
   static void run(Dest& dst, const Src& src) {
     eigen_internal_assert(src.innerSize() == src.size());
     typedef internal::evaluator<Src> SrcEvaluatorType;
@@ -427,6 +487,7 @@ struct sparse_vector_assign_selector<Dest, Src, SVA_Inner> {
 
 template <typename Dest, typename Src>
 struct sparse_vector_assign_selector<Dest, Src, SVA_Outer> {
+  EIGEN_DEVICE_FUNC
   static void run(Dest& dst, const Src& src) {
     eigen_internal_assert(src.outerSize() == src.size());
     typedef internal::evaluator<Src> SrcEvaluatorType;
@@ -440,6 +501,7 @@ struct sparse_vector_assign_selector<Dest, Src, SVA_Outer> {
 
 template <typename Dest, typename Src>
 struct sparse_vector_assign_selector<Dest, Src, SVA_RuntimeSwitch> {
+  EIGEN_DEVICE_FUNC
   static void run(Dest& dst, const Src& src) {
     if (src.outerSize() == 1)
       sparse_vector_assign_selector<Dest, Src, SVA_Inner>::run(dst, src);

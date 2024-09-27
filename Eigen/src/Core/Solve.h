@@ -64,6 +64,7 @@ class Solve : public SolveImpl<Decomposition, RhsType, typename internal::traits
   typedef typename internal::traits<Solve>::PlainObject PlainObject;
   typedef typename internal::traits<Solve>::StorageIndex StorageIndex;
 
+  EIGEN_DEVICE_FUNC
   Solve(const Decomposition &dec, const RhsType &rhs) : m_dec(dec), m_rhs(rhs) {}
 
   EIGEN_DEVICE_FUNC EIGEN_CONSTEXPR Index rows() const EIGEN_NOEXCEPT { return m_dec.cols(); }
@@ -125,6 +126,7 @@ struct evaluator<Solve<Decomposition, RhsType> >
 template <typename DstXprType, typename DecType, typename RhsType, typename Scalar>
 struct Assignment<DstXprType, Solve<DecType, RhsType>, internal::assign_op<Scalar, Scalar>, Dense2Dense> {
   typedef Solve<DecType, RhsType> SrcXprType;
+  EIGEN_DEVICE_FUNC
   static void run(DstXprType &dst, const SrcXprType &src, const internal::assign_op<Scalar, Scalar> &) {
     Index dstRows = src.rows();
     Index dstCols = src.cols();
@@ -139,6 +141,7 @@ template <typename DstXprType, typename DecType, typename RhsType, typename Scal
 struct Assignment<DstXprType, Solve<Transpose<const DecType>, RhsType>, internal::assign_op<Scalar, Scalar>,
                   Dense2Dense> {
   typedef Solve<Transpose<const DecType>, RhsType> SrcXprType;
+  EIGEN_DEVICE_FUNC
   static void run(DstXprType &dst, const SrcXprType &src, const internal::assign_op<Scalar, Scalar> &) {
     Index dstRows = src.rows();
     Index dstCols = src.cols();
@@ -158,6 +161,7 @@ struct Assignment<
   typedef Solve<CwiseUnaryOp<internal::scalar_conjugate_op<typename DecType::Scalar>, const Transpose<const DecType> >,
                 RhsType>
       SrcXprType;
+  EIGEN_DEVICE_FUNC
   static void run(DstXprType &dst, const SrcXprType &src, const internal::assign_op<Scalar, Scalar> &) {
     Index dstRows = src.rows();
     Index dstCols = src.cols();

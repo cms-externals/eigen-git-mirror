@@ -39,6 +39,7 @@ namespace internal {
 
 /** Find the root of the tree/set containing the vertex i : Use Path halving */
 template <typename Index, typename IndexVector>
+EIGEN_DEVICE_FUNC
 Index etree_find(Index i, IndexVector& pp) {
   Index p = pp(i);   // Parent
   Index gp = pp(p);  // Grand parent
@@ -58,6 +59,7 @@ Index etree_find(Index i, IndexVector& pp) {
  * \param perm The permutation to apply to the column of \b mat
  */
 template <typename MatrixType, typename IndexVector>
+EIGEN_DEVICE_FUNC
 int coletree(const MatrixType& mat, IndexVector& parent, IndexVector& firstRowElt,
              typename MatrixType::StorageIndex* perm = 0) {
   typedef typename MatrixType::StorageIndex StorageIndex;
@@ -123,6 +125,7 @@ int coletree(const MatrixType& mat, IndexVector& parent, IndexVector& firstRowEl
  * This routine was contributed by Cédric Doucet, CEDRAT Group, Meylan, France.
  */
 template <typename IndexVector>
+EIGEN_DEVICE_FUNC
 void nr_etdfs(typename IndexVector::Scalar n, IndexVector& parent, IndexVector& first_kid, IndexVector& next_kid,
               IndexVector& post, typename IndexVector::Scalar postnum) {
   typedef typename IndexVector::Scalar StorageIndex;

@@ -45,6 +45,7 @@ struct general_matrix_matrix_triangular_product<Index, LhsScalar, LhsStorageOrde
                                                 RhsStorageOrder, ConjugateRhs, RowMajor, ResInnerStride, UpLo,
                                                 Version> {
   typedef typename ScalarBinaryOpTraits<LhsScalar, RhsScalar>::ReturnType ResScalar;
+  EIGEN_DEVICE_FUNC
   static EIGEN_STRONG_INLINE void run(Index size, Index depth, const LhsScalar* lhs, Index lhsStride,
                                       const RhsScalar* rhs, Index rhsStride, ResScalar* res, Index resIncr,
                                       Index resStride, const ResScalar& alpha,
@@ -64,6 +65,7 @@ struct general_matrix_matrix_triangular_product<Index, LhsScalar, LhsStorageOrde
                                                 RhsStorageOrder, ConjugateRhs, ColMajor, ResInnerStride, UpLo,
                                                 Version> {
   typedef typename ScalarBinaryOpTraits<LhsScalar, RhsScalar>::ReturnType ResScalar;
+  EIGEN_DEVICE_FUNC
   static EIGEN_STRONG_INLINE void run(Index size, Index depth, const LhsScalar* lhs_, Index lhsStride,
                                       const RhsScalar* rhs_, Index rhsStride, ResScalar* res_, Index resIncr,
                                       Index resStride, const ResScalar& alpha,
@@ -149,6 +151,7 @@ struct tribb_kernel {
   typedef typename Traits::ResScalar ResScalar;
 
   enum { BlockSize = meta_least_common_multiple<plain_enum_max(mr, nr), plain_enum_min(mr, nr)>::ret };
+  EIGEN_DEVICE_FUNC
   void operator()(ResScalar* res_, Index resIncr, Index resStride, const LhsScalar* blockA, const RhsScalar* blockB,
                   Index size, Index depth, const ResScalar& alpha) {
     typedef blas_data_mapper<ResScalar, Index, ColMajor, Unaligned, ResInnerStride> ResMapper;
@@ -202,6 +205,7 @@ struct general_product_to_triangular_selector;
 
 template <typename MatrixType, typename ProductType, int UpLo>
 struct general_product_to_triangular_selector<MatrixType, ProductType, UpLo, true> {
+  EIGEN_DEVICE_FUNC
   static void run(MatrixType& mat, const ProductType& prod, const typename MatrixType::Scalar& alpha, bool beta) {
     typedef typename MatrixType::Scalar Scalar;
 
@@ -252,6 +256,7 @@ struct general_product_to_triangular_selector<MatrixType, ProductType, UpLo, tru
 
 template <typename MatrixType, typename ProductType, int UpLo>
 struct general_product_to_triangular_selector<MatrixType, ProductType, UpLo, false> {
+  EIGEN_DEVICE_FUNC
   static void run(MatrixType& mat, const ProductType& prod, const typename MatrixType::Scalar& alpha, bool beta) {
     typedef internal::remove_all_t<typename ProductType::LhsNested> Lhs;
     typedef internal::blas_traits<Lhs> LhsBlasTraits;

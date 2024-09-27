@@ -426,7 +426,7 @@ struct TensorEvaluator<const TensorFFTOp<FFT, ArgType, FFTResultType, FFTDir>, D
     Index j = 1;
     for (Index i = 1; i < n; ++i) {
       if (j > i) {
-        std::swap(data[j - 1], data[i - 1]);
+        numext::swap(data[j - 1], data[i - 1]);
       }
       Index m = n >> 1;
       while (m >= 2 && j > m) {

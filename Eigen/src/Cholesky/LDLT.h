@@ -84,6 +84,7 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
    * The default constructor is useful in cases in which the user intends to
    * perform decompositions via LDLT::compute(const MatrixType&).
    */
+  EIGEN_DEVICE_FUNC
   LDLT() : m_matrix(), m_transpositions(), m_sign(internal::ZeroSign), m_isInitialized(false) {}
 
   /** \brief Default Constructor with memory preallocation
@@ -92,6 +93,7 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
    * according to the specified problem \a size.
    * \sa LDLT()
    */
+  EIGEN_DEVICE_FUNC
   explicit LDLT(Index size)
       : m_matrix(size, size),
         m_transpositions(size),
@@ -106,6 +108,7 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
    * \sa LDLT(Index size)
    */
   template <typename InputType>
+  EIGEN_DEVICE_FUNC
   explicit LDLT(const EigenBase<InputType>& matrix)
       : m_matrix(matrix.rows(), matrix.cols()),
         m_transpositions(matrix.rows()),
@@ -123,6 +126,7 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
    * \sa LDLT(const EigenBase&)
    */
   template <typename InputType>
+  EIGEN_DEVICE_FUNC
   explicit LDLT(EigenBase<InputType>& matrix)
       : m_matrix(matrix.derived()),
         m_transpositions(matrix.rows()),
@@ -135,15 +139,18 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
   /** Clear any existing decomposition
    * \sa rankUpdate(w,sigma)
    */
+  EIGEN_DEVICE_FUNC
   void setZero() { m_isInitialized = false; }
 
   /** \returns a view of the upper triangular matrix U */
+  EIGEN_DEVICE_FUNC
   inline typename Traits::MatrixU matrixU() const {
     eigen_assert(m_isInitialized && "LDLT is not initialized.");
     return Traits::getU(m_matrix);
   }
 
   /** \returns a view of the lower triangular matrix L */
+  EIGEN_DEVICE_FUNC
   inline typename Traits::MatrixL matrixL() const {
     eigen_assert(m_isInitialized && "LDLT is not initialized.");
     return Traits::getL(m_matrix);
@@ -151,24 +158,28 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
 
   /** \returns the permutation matrix P as a transposition sequence.
    */
+  EIGEN_DEVICE_FUNC
   inline const TranspositionType& transpositionsP() const {
     eigen_assert(m_isInitialized && "LDLT is not initialized.");
     return m_transpositions;
   }
 
   /** \returns the coefficients of the diagonal matrix D */
+  EIGEN_DEVICE_FUNC
   inline Diagonal<const MatrixType> vectorD() const {
     eigen_assert(m_isInitialized && "LDLT is not initialized.");
     return m_matrix.diagonal();
   }
 
   /** \returns true if the matrix is positive (semidefinite) */
+  EIGEN_DEVICE_FUNC
   inline bool isPositive() const {
     eigen_assert(m_isInitialized && "LDLT is not initialized.");
     return m_sign == internal::PositiveSemiDef || m_sign == internal::ZeroSign;
   }
 
   /** \returns true if the matrix is negative (semidefinite) */
+  EIGEN_DEVICE_FUNC
   inline bool isNegative(void) const {
     eigen_assert(m_isInitialized && "LDLT is not initialized.");
     return m_sign == internal::NegativeSemiDef || m_sign == internal::ZeroSign;
@@ -191,35 +202,42 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
    * \sa MatrixBase::ldlt(), SelfAdjointView::ldlt()
    */
   template <typename Rhs>
+  EIGEN_DEVICE_FUNC
   inline const Solve<LDLT, Rhs> solve(const MatrixBase<Rhs>& b) const;
 #endif
 
   template <typename Derived>
+  EIGEN_DEVICE_FUNC
   bool solveInPlace(MatrixBase<Derived>& bAndX) const;
 
   template <typename InputType>
+  EIGEN_DEVICE_FUNC
   LDLT& compute(const EigenBase<InputType>& matrix);
 
   /** \returns an estimate of the reciprocal condition number of the matrix of
    *  which \c *this is the LDLT decomposition.
    */
+  EIGEN_DEVICE_FUNC
   RealScalar rcond() const {
     eigen_assert(m_isInitialized && "LDLT is not initialized.");
     return internal::rcond_estimate_helper(m_l1_norm, *this);
   }
 
   template <typename Derived>
+  EIGEN_DEVICE_FUNC
   LDLT& rankUpdate(const MatrixBase<Derived>& w, const RealScalar& alpha = 1);
 
   /** \returns the internal LDLT decomposition matrix
    *
    * TODO: document the storage layout
    */
+  EIGEN_DEVICE_FUNC
   inline const MatrixType& matrixLDLT() const {
     eigen_assert(m_isInitialized && "LDLT is not initialized.");
     return m_matrix;
   }
 
+  EIGEN_DEVICE_FUNC
   MatrixType reconstructedMatrix() const;
 
   /** \returns the adjoint of \c *this, that is, a const reference to the decomposition itself as the underlying matrix
@@ -228,6 +246,7 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
    * This method is provided for compatibility with other matrix decompositions, thus enabling generic code such as:
    * \code x = decomposition.adjoint().solve(b) \endcode
    */
+  EIGEN_DEVICE_FUNC
   const LDLT& adjoint() const { return *this; }
 
   EIGEN_DEVICE_FUNC inline EIGEN_CONSTEXPR Index rows() const EIGEN_NOEXCEPT { return m_matrix.rows(); }
@@ -238,6 +257,7 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
    * \returns \c Success if computation was successful,
    *          \c NumericalIssue if the factorization failed because of a zero pivot.
    */
+  EIGEN_DEVICE_FUNC
   ComputationInfo info() const {
     eigen_assert(m_isInitialized && "LDLT is not initialized.");
     return m_info;
@@ -245,9 +265,11 @@ class LDLT : public SolverBase<LDLT<MatrixType_, UpLo_> > {
 
 #ifndef EIGEN_PARSED_BY_DOXYGEN
   template <typename RhsType, typename DstType>
+  EIGEN_DEVICE_FUNC
   void _solve_impl(const RhsType& rhs, DstType& dst) const;
 
   template <bool Conjugate, typename RhsType, typename DstType>
+  EIGEN_DEVICE_FUNC
   void _solve_impl_transposed(const RhsType& rhs, DstType& dst) const;
 #endif
 
@@ -277,6 +299,7 @@ struct ldlt_inplace;
 template <>
 struct ldlt_inplace<Lower> {
   template <typename MatrixType, typename TranspositionType, typename Workspace>
+  EIGEN_DEVICE_FUNC
   static bool unblocked(MatrixType& mat, TranspositionType& transpositions, Workspace& temp, SignMatrix& sign) {
     using std::abs;
     typedef typename MatrixType::Scalar Scalar;
@@ -313,7 +336,7 @@ struct ldlt_inplace<Lower> {
         Index s = size - index_of_biggest_in_corner - 1;  // trailing size after the biggest element
         mat.row(k).head(k).swap(mat.row(index_of_biggest_in_corner).head(k));
         mat.col(k).tail(s).swap(mat.col(index_of_biggest_in_corner).tail(s));
-        std::swap(mat.coeffRef(k, k), mat.coeffRef(index_of_biggest_in_corner, index_of_biggest_in_corner));
+        numext::swap(mat.coeffRef(k, k), mat.coeffRef(index_of_biggest_in_corner, index_of_biggest_in_corner));
         for (Index i = k + 1; i < index_of_biggest_in_corner; ++i) {
           Scalar tmp = mat.coeffRef(i, k);
           mat.coeffRef(i, k) = numext::conj(mat.coeffRef(index_of_biggest_in_corner, i));
@@ -389,6 +412,7 @@ struct ldlt_inplace<Lower> {
   // Here only rank-1 updates are implemented, to reduce the
   // requirement for intermediate storage and improve accuracy
   template <typename MatrixType, typename WDerived>
+  EIGEN_DEVICE_FUNC
   static bool updateInPlace(MatrixType& mat, MatrixBase<WDerived>& w,
                             const typename MatrixType::RealScalar& sigma = 1) {
     using numext::isfinite;
@@ -423,6 +447,7 @@ struct ldlt_inplace<Lower> {
   }
 
   template <typename MatrixType, typename TranspositionType, typename Workspace, typename WType>
+  EIGEN_DEVICE_FUNC
   static bool update(MatrixType& mat, const TranspositionType& transpositions, Workspace& tmp, const WType& w,
                      const typename MatrixType::RealScalar& sigma = 1) {
     // Apply the permutation to the input w
@@ -435,6 +460,7 @@ struct ldlt_inplace<Lower> {
 template <>
 struct ldlt_inplace<Upper> {
   template <typename MatrixType, typename TranspositionType, typename Workspace>
+  EIGEN_DEVICE_FUNC
   static EIGEN_STRONG_INLINE bool unblocked(MatrixType& mat, TranspositionType& transpositions, Workspace& temp,
                                             SignMatrix& sign) {
     Transpose<MatrixType> matt(mat);
@@ -442,6 +468,7 @@ struct ldlt_inplace<Upper> {
   }
 
   template <typename MatrixType, typename TranspositionType, typename Workspace, typename WType>
+  EIGEN_DEVICE_FUNC
   static EIGEN_STRONG_INLINE bool update(MatrixType& mat, TranspositionType& transpositions, Workspace& tmp, WType& w,
                                          const typename MatrixType::RealScalar& sigma = 1) {
     Transpose<MatrixType> matt(mat);
@@ -453,7 +480,9 @@ template <typename MatrixType>
 struct LDLT_Traits<MatrixType, Lower> {
   typedef const TriangularView<const MatrixType, UnitLower> MatrixL;
   typedef const TriangularView<const typename MatrixType::AdjointReturnType, UnitUpper> MatrixU;
+  EIGEN_DEVICE_FUNC
   static inline MatrixL getL(const MatrixType& m) { return MatrixL(m); }
+  EIGEN_DEVICE_FUNC
   static inline MatrixU getU(const MatrixType& m) { return MatrixU(m.adjoint()); }
 };
 
@@ -461,7 +490,9 @@ template <typename MatrixType>
 struct LDLT_Traits<MatrixType, Upper> {
   typedef const TriangularView<const typename MatrixType::AdjointReturnType, UnitLower> MatrixL;
   typedef const TriangularView<const MatrixType, UnitUpper> MatrixU;
+  EIGEN_DEVICE_FUNC
   static inline MatrixL getL(const MatrixType& m) { return MatrixL(m.adjoint()); }
+  EIGEN_DEVICE_FUNC
   static inline MatrixU getU(const MatrixType& m) { return MatrixU(m); }
 };
 
@@ -471,6 +502,7 @@ struct LDLT_Traits<MatrixType, Upper> {
  */
 template <typename MatrixType, int UpLo_>
 template <typename InputType>
+EIGEN_DEVICE_FUNC
 LDLT<MatrixType, UpLo_>& LDLT<MatrixType, UpLo_>::compute(const EigenBase<InputType>& a) {
   eigen_assert(a.rows() == a.cols());
   const Index size = a.rows();
@@ -510,6 +542,7 @@ LDLT<MatrixType, UpLo_>& LDLT<MatrixType, UpLo_>::compute(const EigenBase<InputT
  */
 template <typename MatrixType, int UpLo_>
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 LDLT<MatrixType, UpLo_>& LDLT<MatrixType, UpLo_>::rankUpdate(
     const MatrixBase<Derived>& w, const typename LDLT<MatrixType, UpLo_>::RealScalar& sigma) {
   typedef typename TranspositionType::StorageIndex IndexType;
@@ -534,12 +567,14 @@ LDLT<MatrixType, UpLo_>& LDLT<MatrixType, UpLo_>::rankUpdate(
 #ifndef EIGEN_PARSED_BY_DOXYGEN
 template <typename MatrixType_, int UpLo_>
 template <typename RhsType, typename DstType>
+EIGEN_DEVICE_FUNC
 void LDLT<MatrixType_, UpLo_>::_solve_impl(const RhsType& rhs, DstType& dst) const {
   _solve_impl_transposed<true>(rhs, dst);
 }
 
 template <typename MatrixType_, int UpLo_>
 template <bool Conjugate, typename RhsType, typename DstType>
+EIGEN_DEVICE_FUNC
 void LDLT<MatrixType_, UpLo_>::_solve_impl_transposed(const RhsType& rhs, DstType& dst) const {
   // dst = P b
   dst = m_transpositions * rhs;
@@ -592,6 +627,7 @@ void LDLT<MatrixType_, UpLo_>::_solve_impl_transposed(const RhsType& rhs, DstTyp
  */
 template <typename MatrixType, int UpLo_>
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 bool LDLT<MatrixType, UpLo_>::solveInPlace(MatrixBase<Derived>& bAndX) const {
   eigen_assert(m_isInitialized && "LDLT is not initialized.");
   eigen_assert(m_matrix.rows() == bAndX.rows());
@@ -605,6 +641,7 @@ bool LDLT<MatrixType, UpLo_>::solveInPlace(MatrixBase<Derived>& bAndX) const {
  * i.e., it returns the product: P^T L D L^* P.
  * This function is provided for debug purpose. */
 template <typename MatrixType, int UpLo_>
+EIGEN_DEVICE_FUNC
 MatrixType LDLT<MatrixType, UpLo_>::reconstructedMatrix() const {
   eigen_assert(m_isInitialized && "LDLT is not initialized.");
   const Index size = m_matrix.rows();
@@ -630,6 +667,7 @@ MatrixType LDLT<MatrixType, UpLo_>::reconstructedMatrix() const {
  * \sa MatrixBase::ldlt()
  */
 template <typename MatrixType, unsigned int UpLo>
+EIGEN_DEVICE_FUNC
 inline const LDLT<typename SelfAdjointView<MatrixType, UpLo>::PlainObject, UpLo>
 SelfAdjointView<MatrixType, UpLo>::ldlt() const {
   return LDLT<PlainObject, UpLo>(m_matrix);
@@ -640,6 +678,7 @@ SelfAdjointView<MatrixType, UpLo>::ldlt() const {
  * \sa SelfAdjointView::ldlt()
  */
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 inline const LDLT<typename MatrixBase<Derived>::PlainObject> MatrixBase<Derived>::ldlt() const {
   return LDLT<PlainObject>(derived());
 }

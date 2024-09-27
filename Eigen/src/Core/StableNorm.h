@@ -200,6 +200,7 @@ inline typename NumTraits<typename traits<Derived>::Scalar>::Real blueNorm_impl(
  * \sa norm(), blueNorm(), hypotNorm()
  */
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 inline typename NumTraits<typename internal::traits<Derived>::Scalar>::Real MatrixBase<Derived>::stableNorm() const {
   return internal::stable_norm_impl(derived());
 }
@@ -214,6 +215,7 @@ inline typename NumTraits<typename internal::traits<Derived>::Scalar>::Real Matr
  * \sa norm(), stableNorm(), hypotNorm()
  */
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 inline typename NumTraits<typename internal::traits<Derived>::Scalar>::Real MatrixBase<Derived>::blueNorm() const {
   return internal::blueNorm_impl(*this);
 }
@@ -224,6 +226,7 @@ inline typename NumTraits<typename internal::traits<Derived>::Scalar>::Real Matr
  * \sa norm(), stableNorm()
  */
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 inline typename NumTraits<typename internal::traits<Derived>::Scalar>::Real MatrixBase<Derived>::hypotNorm() const {
   if (size() == 1)
     return numext::abs(coeff(0, 0));

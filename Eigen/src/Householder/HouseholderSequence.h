@@ -97,6 +97,7 @@ template <typename VectorsType, typename CoeffsType>
 struct hseq_side_dependent_impl<VectorsType, CoeffsType, OnTheRight> {
   typedef Transpose<Block<const VectorsType, 1, Dynamic> > EssentialVectorType;
   typedef HouseholderSequence<VectorsType, CoeffsType, OnTheRight> HouseholderSequenceType;
+  EIGEN_DEVICE_FUNC
   static inline const EssentialVectorType essentialVector(const HouseholderSequenceType& h, Index k) {
     Index start = k + 1 + h.m_shift;
     return Block<const VectorsType, 1, Dynamic>(h.m_vectors, k, start, 1, h.rows() - start).transpose();
@@ -213,6 +214,7 @@ class HouseholderSequence : public EigenBase<HouseholderSequence<VectorsType, Co
   }
 
   /** \brief %Transpose of the Householder sequence. */
+  EIGEN_DEVICE_FUNC
   TransposeReturnType transpose() const {
     return TransposeReturnType(m_vectors.conjugate(), m_coeffs)
         .setReverseFlag(!m_reverse)
@@ -221,6 +223,7 @@ class HouseholderSequence : public EigenBase<HouseholderSequence<VectorsType, Co
   }
 
   /** \brief Complex conjugate of the Householder sequence. */
+  EIGEN_DEVICE_FUNC
   ConjugateReturnType conjugate() const {
     return ConjugateReturnType(m_vectors.conjugate(), m_coeffs.conjugate())
         .setReverseFlag(m_reverse)
@@ -238,6 +241,7 @@ class HouseholderSequence : public EigenBase<HouseholderSequence<VectorsType, Co
   }
 
   /** \brief Adjoint (conjugate transpose) of the Householder sequence. */
+  EIGEN_DEVICE_FUNC
   AdjointReturnType adjoint() const {
     return AdjointReturnType(m_vectors, m_coeffs.conjugate())
         .setReverseFlag(!m_reverse)
@@ -246,6 +250,7 @@ class HouseholderSequence : public EigenBase<HouseholderSequence<VectorsType, Co
   }
 
   /** \brief Inverse of the Householder sequence (equals the adjoint). */
+  EIGEN_DEVICE_FUNC
   AdjointReturnType inverse() const { return adjoint(); }
 
   /** \internal */
@@ -379,6 +384,7 @@ class HouseholderSequence : public EigenBase<HouseholderSequence<VectorsType, Co
    * and \f$ M \f$ is the matrix \p other.
    */
   template <typename OtherDerived>
+  EIGEN_DEVICE_FUNC
   typename internal::matrix_type_times_scalar_type<Scalar, OtherDerived>::Type operator*(
       const MatrixBase<OtherDerived>& other) const {
     typename internal::matrix_type_times_scalar_type<Scalar, OtherDerived>::Type res(
@@ -448,6 +454,7 @@ class HouseholderSequence : public EigenBase<HouseholderSequence<VectorsType, Co
     return *this;
   }
 
+  EIGEN_DEVICE_FUNC
   bool reverseFlag() const { return m_reverse; } /**< \internal \brief Returns the reverse flag. */
 
   typename VectorsType::Nested m_vectors;
@@ -467,6 +474,7 @@ class HouseholderSequence : public EigenBase<HouseholderSequence<VectorsType, Co
  * Householder sequence represented by \p h.
  */
 template <typename OtherDerived, typename VectorsType, typename CoeffsType, int Side>
+EIGEN_DEVICE_FUNC
 typename internal::matrix_type_times_scalar_type<typename VectorsType::Scalar, OtherDerived>::Type operator*(
     const MatrixBase<OtherDerived>& other, const HouseholderSequence<VectorsType, CoeffsType, Side>& h) {
   typename internal::matrix_type_times_scalar_type<typename VectorsType::Scalar, OtherDerived>::Type res(
@@ -481,6 +489,7 @@ typename internal::matrix_type_times_scalar_type<typename VectorsType::Scalar, O
  * \returns A HouseholderSequence constructed from the specified arguments.
  */
 template <typename VectorsType, typename CoeffsType>
+EIGEN_DEVICE_FUNC
 HouseholderSequence<VectorsType, CoeffsType> householderSequence(const VectorsType& v, const CoeffsType& h) {
   return HouseholderSequence<VectorsType, CoeffsType, OnTheLeft>(v, h);
 }
@@ -492,6 +501,7 @@ HouseholderSequence<VectorsType, CoeffsType> householderSequence(const VectorsTy
  * the constructed HouseholderSequence is set to OnTheRight, instead of the default OnTheLeft.
  */
 template <typename VectorsType, typename CoeffsType>
+EIGEN_DEVICE_FUNC
 HouseholderSequence<VectorsType, CoeffsType, OnTheRight> rightHouseholderSequence(const VectorsType& v,
                                                                                   const CoeffsType& h) {
   return HouseholderSequence<VectorsType, CoeffsType, OnTheRight>(v, h);

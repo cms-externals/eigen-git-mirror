@@ -23,6 +23,7 @@ namespace Eigen {
 
 template <typename Scalar, typename Index, int UpLo, bool ConjLhs, bool ConjRhs>
 struct selfadjoint_rank1_update<Scalar, Index, ColMajor, UpLo, ConjLhs, ConjRhs> {
+  EIGEN_DEVICE_FUNC
   static void run(Index size, Scalar* mat, Index stride, const Scalar* vecX, const Scalar* vecY, const Scalar& alpha) {
     internal::conj_if<ConjRhs> cj;
     typedef Map<const Matrix<Scalar, Dynamic, 1> > OtherMap;
@@ -38,6 +39,7 @@ struct selfadjoint_rank1_update<Scalar, Index, ColMajor, UpLo, ConjLhs, ConjRhs>
 
 template <typename Scalar, typename Index, int UpLo, bool ConjLhs, bool ConjRhs>
 struct selfadjoint_rank1_update<Scalar, Index, RowMajor, UpLo, ConjLhs, ConjRhs> {
+  EIGEN_DEVICE_FUNC
   static void run(Index size, Scalar* mat, Index stride, const Scalar* vecX, const Scalar* vecY, const Scalar& alpha) {
     selfadjoint_rank1_update<Scalar, Index, ColMajor, UpLo == Lower ? Upper : Lower, ConjRhs, ConjLhs>::run(
         size, mat, stride, vecY, vecX, alpha);
@@ -49,6 +51,7 @@ struct selfadjoint_product_selector;
 
 template <typename MatrixType, typename OtherType, int UpLo>
 struct selfadjoint_product_selector<MatrixType, OtherType, UpLo, true> {
+  EIGEN_DEVICE_FUNC
   static void run(MatrixType& mat, const OtherType& other, const typename MatrixType::Scalar& alpha) {
     typedef typename MatrixType::Scalar Scalar;
     typedef internal::blas_traits<OtherType> OtherBlasTraits;
@@ -83,6 +86,7 @@ struct selfadjoint_product_selector<MatrixType, OtherType, UpLo, true> {
 
 template <typename MatrixType, typename OtherType, int UpLo>
 struct selfadjoint_product_selector<MatrixType, OtherType, UpLo, false> {
+  EIGEN_DEVICE_FUNC
   static void run(MatrixType& mat, const OtherType& other, const typename MatrixType::Scalar& alpha) {
     typedef typename MatrixType::Scalar Scalar;
     typedef internal::blas_traits<OtherType> OtherBlasTraits;

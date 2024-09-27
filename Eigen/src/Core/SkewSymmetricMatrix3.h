@@ -316,6 +316,7 @@ EIGEN_DEVICE_FUNC inline const SkewSymmetricWrapper<const Derived> MatrixBase<De
  *          within the precision given by \a prec.
  */
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 bool MatrixBase<Derived>::isSkewSymmetric(const RealScalar& prec) const {
   if (cols() != rows()) return false;
   return (this->transpose() + *this).isZero(prec);

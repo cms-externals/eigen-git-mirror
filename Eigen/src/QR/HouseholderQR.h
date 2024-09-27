@@ -523,6 +523,7 @@ void HouseholderQR<MatrixType>::computeInPlace() {
  * \sa class HouseholderQR
  */
 template <typename Derived>
+EIGEN_DEVICE_FUNC
 const HouseholderQR<typename MatrixBase<Derived>::PlainObject> MatrixBase<Derived>::householderQr() const {
   return HouseholderQR<PlainObject>(eval());
 }

@@ -444,10 +444,11 @@ class const_blas_data_mapper : public blas_data_mapper<const Scalar, Index, Stor
  public:
   typedef const_blas_data_mapper<Scalar, Index, StorageOrder> SubMapper;
 
+  EIGEN_DEVICE_FUNC
   EIGEN_ALWAYS_INLINE const_blas_data_mapper(const Scalar* data, Index stride)
       : blas_data_mapper<const Scalar, Index, StorageOrder>(data, stride) {}
 
-  EIGEN_ALWAYS_INLINE SubMapper getSubMapper(Index i, Index j) const {
+  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE SubMapper getSubMapper(Index i, Index j) const {
     return SubMapper(&(this->operator()(i, j)), this->m_stride);
   }
 };
