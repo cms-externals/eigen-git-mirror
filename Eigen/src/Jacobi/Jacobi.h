@@ -348,18 +348,15 @@ struct apply_rotation_in_the_plane_selector<Scalar,OtherScalar,SizeAtCompileTime
     typedef typename packet_traits<Scalar>::type Packet;
     typedef typename packet_traits<OtherScalar>::type OtherPacket;
 
-    enum {
-      RequiredAlignment = plain_enum_max(unpacket_traits<Packet>::alignment,
-                                         unpacket_traits<OtherPacket>::alignment),
-      PacketSize = packet_traits<Scalar>::size,
-      OtherPacketSize = packet_traits<OtherScalar>::size
-    };
+    constexpr int RequiredAlignment =
+        (std::max)(unpacket_traits<Packet>::alignment, unpacket_traits<OtherPacket>::alignment);
+    constexpr Index PacketSize = packet_traits<Scalar>::size;
 
     /*** dynamic-size vectorized paths ***/
     if(size >= 2 * PacketSize && SizeAtCompileTime == Dynamic && ((incrx == 1 && incry == 1) || PacketSize == 1))
     {
       // both vectors are sequentially stored in memory => vectorization
-      enum { Peeling = 2 };
+      constexpr Index Peeling = 2;
 
       Index alignedStart = internal::first_default_aligned(y, size);
       Index alignedEnd = alignedStart + ((size-alignedStart)/PacketSize)*PacketSize;
