@@ -772,7 +772,7 @@ JacobiSVD<MatrixType, Options>& JacobiSVD<MatrixType, Options>::compute_impl(con
     }
     if (pos) {
       pos += i;
-      std::swap(m_singularValues.coeffRef(i), m_singularValues.coeffRef(pos));
+      numext::swap(m_singularValues.coeffRef(i), m_singularValues.coeffRef(pos));
       if (computeU()) m_matrixU.col(pos).swap(m_matrixU.col(i));
       if (computeV()) m_matrixV.col(pos).swap(m_matrixV.col(i));
     }

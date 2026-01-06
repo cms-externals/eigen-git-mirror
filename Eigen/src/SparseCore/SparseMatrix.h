@@ -402,7 +402,7 @@ class SparseMatrix : public SparseCompressedBase<SparseMatrix<Scalar_, Options_,
         m_data.moveChunk(begin, target, innerNNZ);
       }
 
-      std::swap(m_outerIndex, newOuterIndex);
+      numext::swap(m_outerIndex, newOuterIndex);
       internal::conditional_aligned_delete_auto<StorageIndex, true>(newOuterIndex, m_outerSize + 1);
     }
   }
@@ -819,17 +819,19 @@ class SparseMatrix : public SparseCompressedBase<SparseMatrix<Scalar_, Options_,
 
   /** Swaps the content of two sparse matrices of the same type.
    * This is a fast operation that simply swaps the underlying pointers and parameters. */
+  EIGEN_DEVICE_FUNC
   inline void swap(SparseMatrix& other) {
     // EIGEN_DBG_SPARSE(std::cout << "SparseMatrix:: swap\n");
-    std::swap(m_outerIndex, other.m_outerIndex);
-    std::swap(m_innerSize, other.m_innerSize);
-    std::swap(m_outerSize, other.m_outerSize);
-    std::swap(m_innerNonZeros, other.m_innerNonZeros);
+    numext::swap(m_outerIndex, other.m_outerIndex);
+    numext::swap(m_innerSize, other.m_innerSize);
+    numext::swap(m_outerSize, other.m_outerSize);
+    numext::swap(m_innerNonZeros, other.m_innerNonZeros);
     m_data.swap(other.m_data);
   }
 
   /** Sets *this to the identity matrix.
    * This function also turns the matrix into compressed mode, and drop any reserved memory. */
+  EIGEN_DEVICE_FUNC
   inline void setIdentity() {
     eigen_assert(m_outerSize == m_innerSize && "ONLY FOR SQUARED MATRICES");
     internal::conditional_aligned_delete_auto<StorageIndex, true>(m_innerNonZeros, m_outerSize);

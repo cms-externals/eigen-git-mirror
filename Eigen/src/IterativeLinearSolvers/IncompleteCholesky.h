@@ -389,8 +389,8 @@ inline void IncompleteCholesky<Scalar, UpLo_, OrderingType>::updateList(Ref<cons
     minpos += jk;
     if (rowIdx(minpos) != rowIdx(jk)) {
       // Swap
-      std::swap(rowIdx(jk), rowIdx(minpos));
-      std::swap(vals(jk), vals(minpos));
+      numext::swap(rowIdx(jk), rowIdx(minpos));
+      numext::swap(vals(jk), vals(minpos));
     }
     firstElt(col) = internal::convert_index<StorageIndex, Index>(jk);
     listCol[rowIdx(jk)].push_back(internal::convert_index<StorageIndex, Index>(col));

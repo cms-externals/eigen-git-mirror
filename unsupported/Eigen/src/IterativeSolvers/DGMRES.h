@@ -44,7 +44,7 @@ void sortWithPermutation(VectorType& vec, IndexType& perm, typename IndexType::S
     flag = false;
     for (Index j = 0; j < vec.size() - 1; j++) {
       if (vec(perm(j)) < vec(perm(j + 1))) {
-        std::swap(perm(j), perm(j + 1));
+        numext::swap(perm(j), perm(j + 1));
         flag = true;
       }
       if (!flag) break;  // The vector is in sorted order

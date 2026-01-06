@@ -62,7 +62,7 @@ EIGEN_BLAS_FUNC(gemv)
   int actual_m = *m;
   int actual_n = *n;
   int code = OP(*opa);
-  if (code != NOTR) std::swap(actual_m, actual_n);
+  if (code != NOTR) numext::swap(actual_m, actual_n);
 
   const Scalar *actual_b = get_compact_vector(b, actual_n, *incb);
   Scalar *actual_c = get_compact_vector(c, actual_m, *incc);
@@ -269,7 +269,7 @@ EIGEN_BLAS_FUNC(gbmv)
 
   int actual_m = *m;
   int actual_n = *n;
-  if (OP(*trans) != NOTR) std::swap(actual_m, actual_n);
+  if (OP(*trans) != NOTR) numext::swap(actual_m, actual_n);
 
   const Scalar *actual_x = get_compact_vector(x, actual_n, *incx);
   Scalar *actual_y = get_compact_vector(y, actual_m, *incy);

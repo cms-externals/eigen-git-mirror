@@ -268,24 +268,28 @@ class SparseVector : public SparseCompressedBase<SparseVector<Scalar_, Options_,
     *this = other.derived();
   }
 
+  EIGEN_DEVICE_FUNC
   inline SparseVector(const SparseVector& other) : Base(other), m_size(0) { *this = other.derived(); }
 
   /** Swaps the values of \c *this and \a other.
    * Overloaded for performance: this version performs a \em shallow swap by swapping pointers and attributes only.
    * \sa SparseMatrixBase::swap()
    */
+  EIGEN_DEVICE_FUNC
   inline void swap(SparseVector& other) {
-    std::swap(m_size, other.m_size);
+    numext::swap(m_size, other.m_size);
     m_data.swap(other.m_data);
   }
 
   template <int OtherOptions>
+  EIGEN_DEVICE_FUNC
   inline void swap(SparseMatrix<Scalar, OtherOptions, StorageIndex>& other) {
     eigen_assert(other.outerSize() == 1);
-    std::swap(m_size, other.m_innerSize);
+    numext::swap(m_size, other.m_innerSize);
     m_data.swap(other.m_data);
   }
 
+  EIGEN_DEVICE_FUNC
   inline SparseVector& operator=(const SparseVector& other) {
     if (other.isRValue()) {
       swap(other.const_cast_derived());

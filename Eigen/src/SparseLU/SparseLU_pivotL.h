@@ -116,12 +116,12 @@ Index SparseLUImpl<Scalar, StorageIndex>::pivotL(const Index jcol, const RealSca
   perm_r(pivrow) = StorageIndex(jcol);
   // Interchange row subscripts
   if (pivptr != nsupc) {
-    std::swap(lsub_ptr[pivptr], lsub_ptr[nsupc]);
+    numext::swap(lsub_ptr[pivptr], lsub_ptr[nsupc]);
     // Interchange numerical values as well, for the two rows in the whole snode
     // such that L is indexed the same way as A
     for (icol = 0; icol <= nsupc; icol++) {
       itemp = pivptr + icol * lda;
-      std::swap(lu_sup_ptr[itemp], lu_sup_ptr[nsupc + icol * lda]);
+      numext::swap(lu_sup_ptr[itemp], lu_sup_ptr[nsupc + icol * lda]);
     }
   }
   // cdiv operations

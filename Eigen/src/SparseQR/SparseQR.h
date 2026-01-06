@@ -105,8 +105,13 @@ class SparseQR : public SparseSolverBase<SparseQR<MatrixType_, OrderingType_> > 
   enum { ColsAtCompileTime = MatrixType::ColsAtCompileTime, MaxColsAtCompileTime = MatrixType::MaxColsAtCompileTime };
 
  public:
+  EIGEN_DEVICE_FUNC
   SparseQR()
-      : m_analysisIsok(false), m_lastError(""), m_useDefaultThreshold(true), m_isQSorted(false), m_isEtreeOk(false) {}
+      : m_analysisIsok(false),
+#if !defined(EIGEN_CUDA_ARCH)
+        m_lastError(""),
+#endif
+        m_useDefaultThreshold(true), m_isQSorted(false), m_isEtreeOk(false) {}
 
   /** Construct a QR factorization of the matrix \a mat.
    *
@@ -114,8 +119,13 @@ class SparseQR : public SparseSolverBase<SparseQR<MatrixType_, OrderingType_> > 
    *
    * \sa compute()
    */
+  EIGEN_DEVICE_FUNC
   explicit SparseQR(const MatrixType& mat)
-      : m_analysisIsok(false), m_lastError(""), m_useDefaultThreshold(true), m_isQSorted(false), m_isEtreeOk(false) {
+      : m_analysisIsok(false),
+#if !defined(EIGEN_CUDA_ARCH)
+        m_lastError(""),
+#endif
+        m_useDefaultThreshold(true), m_isQSorted(false), m_isEtreeOk(false) {
     compute(mat);
   }
 
@@ -195,10 +205,18 @@ class SparseQR : public SparseSolverBase<SparseQR<MatrixType_, OrderingType_> > 
   /** \returns A string describing the type of error.
    * This method is provided to ease debugging, not to handle errors.
    */
-  std::string lastErrorMessage() const { return m_lastError; }
+  EIGEN_DEVICE_FUNC
+  std::string lastErrorMessage() const {
+#if !defined(EIGEN_CUDA_ARCH)
+    return m_lastError;
+#else
+    return "";
+#endif
+  }
 
   /** \internal */
   template <typename Rhs, typename Dest>
+  EIGEN_DEVICE_FUNC
   bool _solve_impl(const MatrixBase<Rhs>& B, MatrixBase<Dest>& dest) const {
     eigen_assert(m_isInitialized && "The factorization should be called first, use compute()");
     eigen_assert(this->rows() == B.rows() &&
@@ -281,7 +299,9 @@ class SparseQR : public SparseSolverBase<SparseQR<MatrixType_, OrderingType_> > 
   bool m_analysisIsok;
   bool m_factorizationIsok;
   mutable ComputationInfo m_info;
+#if !defined(EIGEN_CUDA_ARCH)
   std::string m_lastError;
+#endif
   QRMatrixType m_pmat;             // Temporary matrix
   QRMatrixType m_R;                // The triangular factor matrix
   QRMatrixType m_Q;                // The orthogonal reflectors
@@ -437,7 +457,9 @@ void SparseQR<MatrixType, OrderingType>::factorize(const MatrixType& mat) {
       // Get the nonzeros indexes of the current column of R
       StorageIndex st = m_firstRowElt(curIdx);  // The traversal of the etree starts here
       if (st < 0) {
+#if !defined(EIGEN_CUDA_ARCH)
         m_lastError = "Empty row found during numerical factorization";
+#endif
         m_info = InvalidInput;
         return;
       }
@@ -452,7 +474,7 @@ void SparseQR<MatrixType, OrderingType>::factorize(const MatrixType& mat) {
 
       // Reverse the list to get the topological ordering
       Index nt = nzcolR - bi;
-      for (Index i = 0; i < nt / 2; i++) std::swap(Ridx(bi + i), Ridx(nzcolR - i - 1));
+      for (Index i = 0; i < nt / 2; i++) numext::swap(Ridx(bi + i), Ridx(nzcolR - i - 1));
 
       // Copy the current (curIdx,pcol) value of the input matrix
       if (itp)
@@ -542,7 +564,7 @@ void SparseQR<MatrixType, OrderingType>::factorize(const MatrixType& mat) {
       if (nonzeroCol < diagSize) m_Q.startVec(nonzeroCol);
     } else {
       // Zero pivot found: move implicitly this column to the end
-      for (Index j = nonzeroCol; j < n - 1; j++) std::swap(m_pivotperm.indices()(j), m_pivotperm.indices()[j + 1]);
+      for (Index j = nonzeroCol; j < n - 1; j++) numext::swap(m_pivotperm.indices()(j), m_pivotperm.indices()[j + 1]);
 
       // Recompute the column elimination tree
       internal::coletree(m_pmat, m_etree, m_firstRowElt, m_pivotperm.indices().data());

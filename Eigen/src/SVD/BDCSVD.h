@@ -295,7 +295,7 @@ void BDCSVD<MatrixType, Options>::allocate(Index rows, Index cols, unsigned int 
   m_compU = computeV();
   m_compV = computeU();
   m_isTranspose = (cols > rows);
-  if (m_isTranspose) std::swap(m_compU, m_compV);
+  if (m_isTranspose) numext::swap(m_compU, m_compV);
 
   // kMinAspectRatio is the crossover point that determines if we perform R-Bidiagonalization
   // or bidiagonalize the input matrix directly.

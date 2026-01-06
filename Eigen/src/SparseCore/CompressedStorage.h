@@ -48,27 +48,32 @@ class CompressedStorage {
     return *this;
   }
 
+  EIGEN_DEVICE_FUNC
   void swap(CompressedStorage& other) {
-    std::swap(m_values, other.m_values);
-    std::swap(m_indices, other.m_indices);
-    std::swap(m_size, other.m_size);
-    std::swap(m_allocatedSize, other.m_allocatedSize);
+    numext::swap(m_values, other.m_values);
+    numext::swap(m_indices, other.m_indices);
+    numext::swap(m_size, other.m_size);
+    numext::swap(m_allocatedSize, other.m_allocatedSize);
   }
 
+  EIGEN_DEVICE_FUNC
   ~CompressedStorage() {
     conditional_aligned_delete_auto<Scalar, true>(m_values, m_allocatedSize);
     conditional_aligned_delete_auto<StorageIndex, true>(m_indices, m_allocatedSize);
   }
 
+  EIGEN_DEVICE_FUNC
   void reserve(Index size) {
     Index newAllocatedSize = m_size + size;
     if (newAllocatedSize > m_allocatedSize) reallocate(newAllocatedSize);
   }
 
+  EIGEN_DEVICE_FUNC
   void squeeze() {
     if (m_allocatedSize > m_size) reallocate(m_size);
   }
 
+  EIGEN_DEVICE_FUNC
   void resize(Index size, double reserveSizeFactor = 0) {
     if (m_allocatedSize < size) {
       // Avoid underflow on the std::min<Index> call by choosing the smaller index type.

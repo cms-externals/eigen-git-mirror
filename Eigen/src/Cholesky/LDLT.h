@@ -313,7 +313,7 @@ struct ldlt_inplace<Lower> {
         Index s = size - index_of_biggest_in_corner - 1;  // trailing size after the biggest element
         mat.row(k).head(k).swap(mat.row(index_of_biggest_in_corner).head(k));
         mat.col(k).tail(s).swap(mat.col(index_of_biggest_in_corner).tail(s));
-        std::swap(mat.coeffRef(k, k), mat.coeffRef(index_of_biggest_in_corner, index_of_biggest_in_corner));
+        numext::swap(mat.coeffRef(k, k), mat.coeffRef(index_of_biggest_in_corner, index_of_biggest_in_corner));
         for (Index i = k + 1; i < index_of_biggest_in_corner; ++i) {
           Scalar tmp = mat.coeffRef(i, k);
           mat.coeffRef(i, k) = numext::conj(mat.coeffRef(index_of_biggest_in_corner, i));

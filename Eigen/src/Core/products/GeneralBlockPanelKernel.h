@@ -83,7 +83,44 @@ struct CacheSizes {
 };
 
 /** \internal */
+EIGEN_DEVICE_FUNC
 inline void manage_caching_sizes(Action action, std::ptrdiff_t* l1, std::ptrdiff_t* l2, std::ptrdiff_t* l3) {
+  #ifdef EIGEN_CUDA_ARCH
+  if (action==GetAction)
+  {
+    #if EIGEN_CUDA_ARCH >= 700
+    // Volta, Turing, or newer
+    //   - the L1 cache is configurable at runtime, with a minimum of 32 KB/SM
+    //   - the L2 cache depends on the actual card, with a minimum of 64 KB/SM
+    *l1 =   32 * 1024;
+    *l2 =   64 * 1024;
+    *l3 =           0;
+    #else
+    // Kepler, Maxwell, Pascal
+    //   - the L1 cache is configurable at runtime, with a minimum of 16 KB/SM
+    //   - the L2 cache depends on the actual card, with a minimum of 64 KB/SM
+    *l1 =   16 * 1024;
+    *l2 =   64 * 1024;
+    *l3 =           0;
+    #endif
+  }
+  else
+  {
+    eigen_internal_assert(false);
+  }
+  #elif defined(EIGEN_HIP_DEVICE_COMPILE)
+  if (action==GetAction)
+  {
+    // GCN 5.0 / Radeon Pro WX 9100
+    *l1 =         16 * 1024;  // 16 KB per CU
+    *l2 =   4 * 1024 * 1024;  // 4 MB
+    *l3 =                 0;
+  }
+  else
+  {
+    eigen_internal_assert(false);
+  }
+  #else
   static CacheSizes m_cacheSizes;
 
   if (action == SetAction) {
@@ -100,6 +137,7 @@ inline void manage_caching_sizes(Action action, std::ptrdiff_t* l1, std::ptrdiff
   } else {
     eigen_internal_assert(false);
   }
+  #endif
 }
 
 /* Helper for computeProductBlockingSizes.

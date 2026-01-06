@@ -183,7 +183,7 @@ static void test_shuffle_unshuffle() {
   for (int i = 0; i < 4; ++i) {
     const ptrdiff_t index = internal::random<ptrdiff_t>(i, 3);
     shuffles_inverse[shuffles[index]] = i;
-    std::swap(shuffles[i], shuffles[index]);
+    numext::swap(shuffles[i], shuffles[index]);
   }
 
   Tensor<float, 4, DataLayout> shuffle;

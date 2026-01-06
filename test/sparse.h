@@ -54,7 +54,7 @@ void initSparse(double density, Matrix<Scalar, Dynamic, Dynamic, Opt1>& refMat,
     // sparseMat.startVec(j);
     for (Index i = 0; i < sparseMat.innerSize(); i++) {
       Index ai(i), aj(j);
-      if (IsRowMajor) std::swap(ai, aj);
+      if (IsRowMajor) numext::swap(ai, aj);
       Scalar v = (internal::random<double>(0, 1) < density) ? internal::random<Scalar>() : Scalar(0);
       if ((flags & ForceNonZeroDiag) && (i == j)) {
         // FIXME: the following is too conservative

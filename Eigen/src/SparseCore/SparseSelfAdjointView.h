@@ -470,7 +470,7 @@ void permute_symm_to_fullsymm(
         dest.innerIndexPtr()[k] = ip;
         dest.valuePtr()[k] = it.value();
       } else if (((Mode & Lower) == Lower && r > c) || ((Mode & Upper) == Upper && r < c)) {
-        if (!StorageOrderMatch) std::swap(ip, jp);
+        if (!StorageOrderMatch) numext::swap(ip, jp);
         Index k = count[jp]++;
         dest.innerIndexPtr()[k] = ip;
         dest.valuePtr()[k] = it.value();
@@ -532,7 +532,7 @@ void permute_symm_to_symm(const MatrixType& mat,
       Index k = count[int(DstMode) == int(Lower) ? (std::min)(ip, jp) : (std::max)(ip, jp)]++;
       dest.innerIndexPtr()[k] = int(DstMode) == int(Lower) ? (std::max)(ip, jp) : (std::min)(ip, jp);
 
-      if (!StorageOrderMatch) std::swap(ip, jp);
+      if (!StorageOrderMatch) numext::swap(ip, jp);
       if (((int(DstMode) == int(Lower) && ip < jp) || (int(DstMode) == int(Upper) && ip > jp)))
         dest.valuePtr()[k] = (NonHermitian ? it.value() : numext::conj(it.value()));
       else

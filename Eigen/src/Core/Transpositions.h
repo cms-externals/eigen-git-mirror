@@ -171,6 +171,18 @@ class Transpositions
   /** \returns a reference to the stored array representing the transpositions. */
   EIGEN_DEVICE_FUNC IndicesType& indices() { return m_indices; }
 
+#ifndef EIGEN_PARSED_BY_DOXYGEN
+  /** This is a special case of the templated operator=. Its purpose is to
+    * prevent a default operator= from hiding the templated operator=.
+    */
+  EIGEN_DEVICE_FUNC
+  Transpositions& operator=(const Transpositions& other)
+  {
+    m_indices = other.m_indices;
+    return *this;
+  }
+#endif
+
  protected:
   IndicesType m_indices;
 };

@@ -329,17 +329,17 @@ class BlockSparseMatrix
   }
 
   friend void swap(BlockSparseMatrix& first, BlockSparseMatrix& second) {
-    std::swap(first.m_innerBSize, second.m_innerBSize);
-    std::swap(first.m_outerBSize, second.m_outerBSize);
-    std::swap(first.m_innerOffset, second.m_innerOffset);
-    std::swap(first.m_outerOffset, second.m_outerOffset);
-    std::swap(first.m_nonzerosblocks, second.m_nonzerosblocks);
-    std::swap(first.m_nonzeros, second.m_nonzeros);
-    std::swap(first.m_values, second.m_values);
-    std::swap(first.m_blockPtr, second.m_blockPtr);
-    std::swap(first.m_indices, second.m_indices);
-    std::swap(first.m_outerIndex, second.m_outerIndex);
-    std::swap(first.m_BlockSize, second.m_blockSize);
+    numext::swap(first.m_innerBSize, second.m_innerBSize);
+    numext::swap(first.m_outerBSize, second.m_outerBSize);
+    numext::swap(first.m_innerOffset, second.m_innerOffset);
+    numext::swap(first.m_outerOffset, second.m_outerOffset);
+    numext::swap(first.m_nonzerosblocks, second.m_nonzerosblocks);
+    numext::swap(first.m_nonzeros, second.m_nonzeros);
+    numext::swap(first.m_values, second.m_values);
+    numext::swap(first.m_blockPtr, second.m_blockPtr);
+    numext::swap(first.m_indices, second.m_indices);
+    numext::swap(first.m_outerIndex, second.m_outerIndex);
+    numext::swap(first.m_BlockSize, second.m_blockSize);
   }
 
   BlockSparseMatrix& operator=(BlockSparseMatrix other) {

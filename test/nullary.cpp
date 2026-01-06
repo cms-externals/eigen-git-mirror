@@ -67,7 +67,7 @@ void testVectorType(const VectorType& base) {
 
   Scalar high = internal::random<Scalar>(-500, 500);
   Scalar low = (size == 1 ? high : internal::random<Scalar>(-500, 500));
-  if (numext::real(low) > numext::real(high)) std::swap(low, high);
+  if (numext::real(low) > numext::real(high)) numext::swap(low, high);
 
   // check low==high
   if (internal::random<float>(0.f, 1.f) < 0.05f) low = high;

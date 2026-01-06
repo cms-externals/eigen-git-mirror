@@ -217,7 +217,7 @@ void matrix_function_permute_schur(VectorType& permutation, MatrixType& U, Matri
       T.applyOnTheLeft(k, k + 1, rotation.adjoint());
       T.applyOnTheRight(k, k + 1, rotation);
       U.applyOnTheRight(k, k + 1, rotation);
-      std::swap(permutation.coeffRef(k), permutation.coeffRef(k + 1));
+      numext::swap(permutation.coeffRef(k), permutation.coeffRef(k + 1));
     }
   }
 }
