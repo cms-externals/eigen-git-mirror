@@ -848,7 +848,7 @@
 // GPU stuff
 
 // Disable some features when compiling with GPU compilers (SYCL/HIPCC)
-#if defined(SYCL_DEVICE_ONLY) || defined(EIGEN_HIP_DEVICE_COMPILE)
+#if defined(EIGEN_CUDACC) || defined(SYCL_DEVICE_ONLY) || defined(EIGEN_HIP_DEVICE_COMPILE)
 // Do not try asserts on device code
 #ifndef EIGEN_NO_DEBUG
 #define EIGEN_NO_DEBUG
